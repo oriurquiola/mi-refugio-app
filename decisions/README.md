@@ -1,0 +1,29 @@
+# decisions/ — Registro de decisiones (ADR)
+
+Decisiones técnicas y de alcance, con fecha y razonamiento. Una decisión = un archivo `NNNN-slug.md`.
+No borres decisiones viejas; si cambian, añade una nueva que las reemplace y enlázala.
+
+## Índice
+- `0001-arquitectura-mvp.md` — Stack, SPA sin router, estado en App.tsx.
+- `0002-datos-mock-sin-backend.md` — Datos fijos en data.ts, sin backend, sin mapeo síntoma→técnica.
+- `0003-flujo-linear.md` — Flujo de 4 pantallas y paso de datos.
+- `0004-cta-psicologo-chat.md` — Botón "Hablar con un psicólogo": halo + chat directo de Quédate.
+- `0005-recomendacion-por-sintomas.md` — Recomendaciones reales según síntomas (reemplaza alcance MVP de `0002`).
+
+## Plantilla (copiar para una decisión nueva)
+```
+# NNNN — Título corto
+_Fecha: YYYY-MM-DD · Estado: aceptada|reemplazada por NNNN_
+
+## Contexto
+Qué problema/situación motiva la decisión.
+
+## Decisión
+Qué se decidió, en una frase clara.
+
+## Razón
+Por qué, alternativas descartadas.
+
+## Consecuencias
+Qué implica a futuro / qué tocar si se revierte.
+```

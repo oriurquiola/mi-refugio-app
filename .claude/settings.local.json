@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Read(//usr/local/bin/**)",
+      "Read(//Users/orianaurquiola/.nvm/versions/**)",
+      "Bash(sw_vers)",
+      "Bash(/usr/local/bin/npm install *)",
+      "Bash(/usr/local/bin/npm approve-scripts *)",
+      "WebFetch(domain:quedate.saludoriente.cl)",
+      "Bash(/usr/local/bin/npm run *)",
+      "Bash(PATH=/usr/local/bin:__TRACKED_VAR__ npm run lint)"
+    ]
+  }
+}

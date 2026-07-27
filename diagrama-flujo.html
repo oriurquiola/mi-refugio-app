@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mi Refugio — Estructura y Flujo de Datos</title>
+<style>
+  :root {
+    --bg0:#0D0A28; --bg1:#1A1240; --bg2:#231952;
+    --glass:rgba(255,255,255,0.06); --glassBorder:rgba(255,255,255,0.12);
+    --coral:#E05C35; --lavender:#B8A0EE; --teal:#5EC4BA; --amber:#F7A44A; --pink:#E8829C;
+    --w100:#FFFFFF; --w80:rgba(255,255,255,0.80); --w60:rgba(255,255,255,0.60); --w40:rgba(255,255,255,0.40);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(180deg, var(--bg0) 0%, var(--bg1) 40%, var(--bg2) 100%);
+    color: var(--w100);
+    padding: 32px 20px 80px;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  h1 { font-size: 22px; font-weight: 800; margin: 0 0 4px; }
+  .sub { color: var(--w60); font-size: 13px; margin: 0 0 32px; }
+  h2 {
+    font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--lavender); margin: 40px 0 16px;
+  }
+  .row {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .box {
+    background: var(--glass); border: 1px solid var(--glassBorder); border-radius: 14px;
+    padding: 14px 16px; min-width: 150px; flex: 1 1 150px;
+  }
+  .box .t { font-weight: 800; font-size: 13.5px; margin-bottom: 4px; }
+  .box .d { font-size: 11px; color: var(--w60); line-height: 1.4; }
+  .arrow { color: var(--w40); font-size: 20px; flex: 0 0 auto; padding: 0 2px; }
+  .arrow.down { transform: rotate(90deg); margin: 4px auto; }
+  .accent-coral { border-color: rgba(224,92,53,0.5); box-shadow: 0 0 0 1px rgba(224,92,53,0.15) inset; }
+  .accent-lavender { border-color: rgba(184,160,238,0.5); box-shadow: 0 0 0 1px rgba(184,160,238,0.15) inset; }
+  .accent-teal { border-color: rgba(94,196,186,0.5); box-shadow: 0 0 0 1px rgba(94,196,186,0.15) inset; }
+  .accent-amber { border-color: rgba(247,164,74,0.5); box-shadow: 0 0 0 1px rgba(247,164,74,0.15) inset; }
+  .accent-pink { border-color: rgba(232,130,156,0.5); box-shadow: 0 0 0 1px rgba(232,130,156,0.15) inset; }
+  .back-note {
+    font-size: 11px; color: var(--w40); margin-top: 10px; padding-left: 2px; line-height: 1.6;
+  }
+  .back-note code { color: var(--w60); }
+  .col { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .stack { display: flex; flex-direction: column; gap: 10px; }
+  .legend { display:flex; gap:16px; flex-wrap:wrap; font-size:11px; color:var(--w60); margin-top:8px; }
+  .legend span { display:inline-flex; align-items:center; gap:6px; }
+  .dot { width:9px; height:9px; border-radius:50%; display:inline-block; }
+  .footer-note { margin-top: 48px; font-size: 11px; color: var(--w40); border-top: 1px solid var(--glassBorder); padding-top: 16px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
+  .file-tree { font-size: 12px; line-height: 1.9; color: var(--w80); white-space: pre; overflow-x: auto; background: var(--glass); border: 1px solid var(--glassBorder); border-radius: 14px; padding: 16px; }
+  .file-tree .dim { color: var(--w40); }
+  .file-tree .hl { color: var(--lavender); font-weight: 700; }
+</style>
+</head>
+<body>
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;">Diagrama de la estructura y flujo de datos de la app Mi Refugio: navegación entre pantallas Home, Síntomas, Análisis y Recomendaciones, estado compartido en App.tsx, y datos de ejemplo en data.ts.</h2>
+<div class="wrap">
+  <h1>Mi Refugio — Estructura y Flujo de Datos</h1>
+  <p class="sub">Generado a partir del código fuente actual (React + TypeScript + Vite). Documento de referencia, no forma parte del build.</p>
+
+  <h2>1. Estructura del proyecto</h2>
+  <div class="file-tree">src/
+├── <span class="hl">App.tsx</span>        <span class="dim">orquestador: estado de pantalla + navegación</span>
+├── main.tsx        <span class="dim">entry point</span>
+├── theme.ts        <span class="dim">tokens de color (C.*) usados en toda la app</span>
+├── types.ts        <span class="dim">tipos: AppScreen, Symptom, Technique, RecommendationSession</span>
+├── data.ts         <span class="dim">datos mock: symptoms[], techniques[], mockHistory[]</span>
+├── components/
+│   ├── GlassCard.tsx
+│   ├── PrimaryCTA.tsx
+│   ├── BottomTabBar.tsx              <span class="dim">solo visible en Home</span>
+│   └── FloatingPsychologistButton.tsx <span class="dim">solo visible en Home</span>
+└── screens/
+    ├── Home.tsx
+    ├── Symptoms.tsx
+    ├── Processing.tsx
+    └── Recommendations.tsx</div>
+
+  <h2>2. Flujo de navegación entre pantallas</h2>
+  <div class="row">
+    <div class="box accent-lavender">
+      <div class="t">🏠 Home</div>
+      <div class="d">Hero + CTA "¿Cómo te sientes?"</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="box accent-coral">
+      <div class="t">📋 Symptoms</div>
+      <div class="d">Selección de síntomas por categoría</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="box accent-teal">
+      <div class="t">⏳ Processing</div>
+      <div class="d">Animación de análisis (7s)</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="box accent-amber">
+      <div class="t">🌿 Recommendations</div>
+      <div class="d">Técnicas de contención sugeridas</div>
+    </div>
+  </div>
+  <div class="back-note">
+    ↩ <code>Symptoms → Home</code> (botón atrás) · <code>Recommendations → Symptoms</code> (botón atrás) · <code>Recommendations → Home</code> ("Hacer un nuevo chequeo")
+  </div>
+
+  <h2>3. Flujo de datos de ejemplo</h2>
+  <div class="grid2">
+    <div class="stack">
+      <div class="box accent-coral">
+        <div class="t">data.ts → symptoms[]</div>
+        <div class="d">18 síntomas fijos, agrupados en 3 categorías: físicos, emocionales, pensamientos</div>
+      </div>
+      <div class="col"><div class="arrow down">→</div></div>
+      <div class="box accent-coral">
+        <div class="t">Symptoms.tsx</div>
+        <div class="d">Usuario selecciona IDs → <code>selectedIds: Set&lt;string&gt;</code></div>
+      </div>
+      <div class="col"><div class="arrow down">→</div></div>
+      <div class="box accent-lavender">
+        <div class="t">App.tsx (estado)</div>
+        <div class="d"><code>onContinue(ids)</code> guarda <code>selectedSymptoms</code> en el estado global y navega</div>
+      </div>
+      <div class="col"><div class="arrow down">→</div></div>
+      <div class="box accent-amber">
+        <div class="t">Recommendations.tsx</div>
+        <div class="d">Recibe <code>selectedSymptoms</code> como prop → filtra <code>symptoms[]</code> para mostrar las etiquetas "detectadas"</div>
+      </div>
+    </div>
+    <div class="stack">
+      <div class="box accent-teal">
+        <div class="t">data.ts → techniques[]</div>
+        <div class="d">3 técnicas fijas (Respiración 4-7-8, Grounding 5-4-3-2-1, Ancla de seguridad) con pasos</div>
+      </div>
+      <div class="col"><div class="arrow down">→</div></div>
+      <div class="box accent-teal">
+        <div class="t">Recommendations.tsx</div>
+        <div class="d">Muestra <b>todas</b> las técnicas — el código las asigna estáticamente ("MVP: no hay mapeo real síntoma→técnica" según comentario en Recommendations.tsx:16)</div>
+      </div>
+      <div class="col"><div class="arrow down">→</div></div>
+      <div class="box accent-pink">
+        <div class="t">data.ts → mockHistory[]</div>
+        <div class="d">2 sesiones de ejemplo (Hoy / Ayer) — definidas pero no consumidas por ninguna pantalla actual</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>4. Recursos compartidos</h2>
+  <div class="row">
+    <div class="box">
+      <div class="t">theme.ts</div>
+      <div class="d">Tokens de color (C.coral, C.lavender, etc.) importados por todas las pantallas y componentes</div>
+    </div>
+    <div class="box">
+      <div class="t">GlassCard / PrimaryCTA</div>
+      <div class="d">Componentes de UI reutilizados dentro de varias pantallas</div>
+    </div>
+    <div class="box">
+      <div class="t">BottomTabBar / FloatingPsychologistButton</div>
+      <div class="d">Renderizados solo cuando <code>currentScreen === "HOME"</code></div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><span class="dot" style="background:var(--coral)"></span>Home / Físicos</span>
+    <span><span class="dot" style="background:var(--teal)"></span>Processing / Grounding</span>
+    <span><span class="dot" style="background:var(--amber)"></span>Recommendations / Ancla</span>
+    <span><span class="dot" style="background:var(--lavender)"></span>App state / Pensamientos</span>
+    <span><span class="dot" style="background:var(--pink)"></span>Emocionales / Historial</span>
+  </div>
+
+  <div class="footer-note">
+    Archivo generado como documentación de referencia — no modifica ni depende del proyecto original. Abrir directamente en el navegador (doble clic o "Abrir con").
+  </div>
+</div>
+</body>
+</html>

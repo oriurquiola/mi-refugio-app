@@ -1,0 +1,36 @@
+# Decisiones de diseño — Mi Refugio
+
+Decisiones de diseño con su **por qué**. La especificación completa (tokens, medidas) vive en `design.md`; aquí NO se duplica, se explica el razonamiento y se registran cambios. Insumo académico: `Contexto/ficha4d.md`.
+
+_Fuente: `design.md`, `src/theme.ts`, `Contexto/ficha4d.md`. Actualizado: 2026-07-22._
+
+## Principios (por qué, no solo qué)
+- **Claridad inmediata:** el usuario en pánico debe escanear en < 3 s; CTA principal sin scroll. → jerarquía agresiva, un solo camino.
+- **Calma atmosférica:** dark mode profundo, sin blancos duros, gradientes de cielo nocturno. → contener, no estimular.
+- **Urgencia serena:** coral (`#E05C35`) comunica acción sin alarmar; púrpura/lavanda envuelve. → nunca rojo de alerta.
+- **Cero fricción:** tipografía Nunito redonda, sin jerga técnica ni términos clínicos.
+- **Confianza táctil:** feedback inmediato (escala/brillo/sombra) en todo lo interactivo.
+
+## Decisiones de identidad
+- **Color:** sistema de tokens único en `src/theme.ts` (`C.*`), reflejado en `design.md §2`. Coral = CTA; lavanda = marca; teal/amber/pink = categorías de técnicas/síntomas. Regla: no hardcodear color fuera de `theme.ts`.
+- **Tipografía:** `Dancing Script 700` **solo** para el wordmark "Mi Refugio"; `Nunito` para todo lo demás (`design.md §3`).
+- **Forma:** radios 24/16/999 px; círculo de respiración 50% (`design.md §4`).
+
+## Decisiones de producto/tono (de la Ficha 4D)
+- **No pedir datos personales** en v1 (sin login, sin sensibles). Ver `decisions/0002`.
+- **Meta de flujo:** registro + recomendación en **< 30 s** en mobile.
+- **Voz:** acompañar a la persona; sin alertas, sin urgencia, sin clínica. Segunda persona, cálido.
+- **Delegación IA (D1):** modo *aumentar* — la IA propone layouts/microcopy/animaciones/estados; NO se delega arquitectura de información, jerarquía, estilo visual ni tono.
+
+## Cambios registrados — Update julio 2026
+(Espejo del `design.md §5`, para trazabilidad de decisiones.)
+- **Home:** H2 → "Cuéntanos, ¿cómo te sientes?"; se quitaron subtítulos de las cards de "¿Cómo funciona?"; íconos a **outline** (sin relleno sólido).
+- **Síntomas:** `pb-[160px]` para que el Sticky CTA no tape las últimas opciones; se eliminó el texto "Cada paso toma segundos".
+- **Processing:** duración total 4.6 s → **7.0 s**; cada mensaje 1.1 s → **1.7 s** (tiempo de lectura); label de respiración a `top-[18%]` para no solapar los círculos. Constantes en `src/screens/Processing.tsx`.
+
+## CTA "Hablar con un psicólogo" (2026-07-22)
+- Micro-animación de entrada tipo **border beam** (luz que recorre el borde 1 vez, suave y lenta) en el botón flotante; **halo coral** en el de Recomendaciones. Objetivo: resaltar sin alarmar (coherente con "urgencia serena"). Clic → chat con especialista de Quédate. Detalle y razón en `decisions/0004`.
+
+## Abierto / a decidir (impacto de diseño)
+- Mapeo real síntoma → técnica (hoy se muestran las 3). Ver `decisions/0002` y `state/current.md`.
+- Uso de `mockHistory` en la sección "Últimas recomendaciones" de Home.

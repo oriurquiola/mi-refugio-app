@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Dancing Script", cursive;
+}
+
+body {
+  background-color: #1A1240; /* bg1 */
+  color: #FFFFFF;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Hide scrollbar for clean horizontal scroll */
+::-webkit-scrollbar {
+  display: none;
+}
+* {
+  scrollbar-width: none;
+}
+
+/* Destello de borde ("border beam") para el botón "Hablar con un psicólogo".
+   Un punto de luz recorre la línea del borde una sola vez al entrar. */
+@property --beam-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes border-beam-spin {
+  to {
+    --beam-angle: 360deg;
+  }
+}
+
+@keyframes border-beam-fade {
+  0% { opacity: 0; }
+  22% { opacity: 1; }
+  78% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes border-beam-spin {
+    to { --beam-angle: 0deg; }
+  }
+  @keyframes border-beam-fade {
+    to { opacity: 0; }
+  }
+}
