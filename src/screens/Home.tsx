@@ -171,13 +171,6 @@ export function Home({ onNavigate }: HomeProps) {
         </div>
       </section>
 
-      {/* Footer */}
-      <div className="flex justify-center mt-[16px]">
-        <span className="font-sans font-[600] text-[12px]" style={{ color: C.w40 }}>
-          Mi historial
-        </span>
-      </div>
-
     </div>
   );
 }
