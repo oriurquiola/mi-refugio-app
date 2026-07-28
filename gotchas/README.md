@@ -19,6 +19,6 @@ Cada entrada: síntoma → causa → solución. Añadir aquí cualquier trampa q
 - **Historia:** la Ficha 4D llegó como ` ficha4d.md` (espacio inicial), lo que rompía las rutas "obvias". Renombrado a `Contexto/ficha4d.md` el 2026-07-22.
 - **Prevención:** al recibir archivos nuevos en `Contexto/`, verificar el nombre real con `ls -1` / `xxd` antes de referenciarlo; renombrar si trae espacios al inicio/fin.
 
-## G5 · La UI se ve "estirada" en desktop
-- **Causa:** está diseñada como app **mobile** (viewport angosto).
-- **Solución:** verificar en viewport tipo móvil (~375–420 px de ancho). No es un bug de layout.
+## G5 · La UI se ve "estirada" en desktop (RESUELTO)
+- **Historia:** la app se estiraba a todo el ancho en desktop.
+- **Solución:** `App.tsx` ahora enmarca la app en una columna mobile centrada (`max-w-[440px]`) con `translateZ(0)` para contener los `position: fixed`. Ver `decisions/0006`. En mobile no cambia.

@@ -12,6 +12,7 @@ _Actualizado: 2026-07-22 · Sesión 02_
 - Sistema de memoria (`AGENTS.md` + carpetas) creado.
 - **Botón "Hablar con un psicólogo"** (flotante Home + CTA Recommendations): clic abre chat directo de Quédate (`src/config.ts`). Animación de entrada: **border beam** en el flotante (recorre el borde 1 vez, 2.8 s, fade in/out suave, `@property` + keyframes en `src/index.css`) y **halo coral que respira** en Recommendations. Verificado en navegador. Ver `decisions/0004`.
 - **Recomendación real según síntomas**: `matchesSymptomIds` en `data.ts` + score/orden en `Recommendations.tsx` (coincidentes primero + "Otras técnicas" abajo, chips por técnica). Verificado en navegador. Ver `decisions/0005`.
+- **Marco mobile en desktop**: `App.tsx` enmarca la app como columna centrada `max-w-[440px]` con `translateZ(0)` para contener los `position: fixed`. Verificado a 1280px. Ver `decisions/0006`.
 
 ## ⏳ Pendiente
 - `mockHistory` está definido pero **no se consume** en ninguna pantalla → decidir si Home debe leerlo desde `data.ts`.

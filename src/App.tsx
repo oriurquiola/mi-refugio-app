@@ -31,45 +31,56 @@ export default function App() {
   };
 
   return (
-    <div className="relative w-full h-[100dvh] overflow-hidden bg-[#1A1240]">
-      <AnimatePresence initial={false} custom={direction} mode="wait">
-        <motion.div
-          key={currentScreen}
-          custom={direction}
-          variants={variants}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={{ duration: 0.4, ease: [0.32, 0, 0.22, 1] }}
-          className="absolute inset-0 overflow-y-auto overflow-x-hidden"
-        >
-          {currentScreen === "HOME" && (
-            <Home onNavigate={(s) => navigate(s, 1)} />
-          )}
-          {currentScreen === "SYMPTOMS" && (
-            <Symptoms 
-              onBack={() => navigate("HOME", -1)} 
-              onContinue={(ids) => {
-                setSelectedSymptoms(ids);
-                navigate("PROCESSING", 1);
-              }} 
-            />
-          )}
-          {currentScreen === "PROCESSING" && (
-            <Processing onComplete={() => navigate("RECOMMENDATIONS", 1)} />
-          )}
-          {currentScreen === "RECOMMENDATIONS" && (
-            <Recommendations 
-              onBack={() => navigate("SYMPTOMS", -1)}
-              onHome={() => navigate("HOME", -1)}
-              selectedSymptoms={selectedSymptoms}
-            />
-          )}
-        </motion.div>
-      </AnimatePresence>
+    // Fondo de página (visible en desktop a los lados del marco).
+    <div className="fixed inset-0 flex justify-center overflow-hidden bg-[#0D0A28]">
+      {/*
+        Marco "mobile": en desktop la app se ve como una columna con ancho de
+        teléfono, centrada; el resto del viewport queda como fondo. En mobile
+        ocupa todo el ancho (max-width no aplica). El `transform: translateZ(0)`
+        convierte este marco en el bloque contenedor de los descendientes
+        `position: fixed` (fondos con gradiente, tab bar, botón flotante), para
+        que se posicionen respecto al marco y no al viewport completo.
+      */}
+      <div className="relative w-full max-w-[440px] h-[100dvh] overflow-hidden bg-[#1A1240] shadow-[0_0_80px_rgba(0,0,0,0.55)] [transform:translateZ(0)]">
+        <AnimatePresence initial={false} custom={direction} mode="wait">
+          <motion.div
+            key={currentScreen}
+            custom={direction}
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.4, ease: [0.32, 0, 0.22, 1] }}
+            className="absolute inset-0 overflow-y-auto overflow-x-hidden"
+          >
+            {currentScreen === "HOME" && (
+              <Home onNavigate={(s) => navigate(s, 1)} />
+            )}
+            {currentScreen === "SYMPTOMS" && (
+              <Symptoms
+                onBack={() => navigate("HOME", -1)}
+                onContinue={(ids) => {
+                  setSelectedSymptoms(ids);
+                  navigate("PROCESSING", 1);
+                }}
+              />
+            )}
+            {currentScreen === "PROCESSING" && (
+              <Processing onComplete={() => navigate("RECOMMENDATIONS", 1)} />
+            )}
+            {currentScreen === "RECOMMENDATIONS" && (
+              <Recommendations
+                onBack={() => navigate("SYMPTOMS", -1)}
+                onHome={() => navigate("HOME", -1)}
+                selectedSymptoms={selectedSymptoms}
+              />
+            )}
+          </motion.div>
+        </AnimatePresence>
 
-      {currentScreen === "HOME" && <BottomTabBar />}
-      {currentScreen === "HOME" && <FloatingPsychologistButton />}
+        {currentScreen === "HOME" && <BottomTabBar />}
+        {currentScreen === "HOME" && <FloatingPsychologistButton />}
+      </div>
     </div>
   );
 }
