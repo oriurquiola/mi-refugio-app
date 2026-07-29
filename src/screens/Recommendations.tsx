@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, ChevronDown, Check, ShieldAlert } from 'lucide-react';
+import { ArrowLeft, ChevronDown, Check, ShieldAlert, Wind, Footprints, Anchor } from 'lucide-react';
 import { C } from '../theme';
 import { Technique } from '../types';
 import { symptoms, techniques, DEMO_PINNED_TECHNIQUE_ID } from '../data';
 import { GlassCard } from '../components/GlassCard';
 import { PsychologistCTA } from '../components/PsychologistCTA';
 import { BreathingExercise } from './BreathingExercise';
+
+// Un ícono por técnica, para que la card se reconozca de un vistazo. Outline
+// (por defecto en lucide) y en blanco, sobre el cuadro de color de la técnica.
+const TECHNIQUE_ICONS: Record<string, typeof Wind> = {
+  t1: Wind,        // Respiración 4-7-8
+  t2: Footprints,  // Grounding 5-4-3-2-1: pies en la tierra
+  t3: Anchor,      // Ancla de seguridad
+};
 
 interface RecommendationsProps {
   onBack: () => void;
@@ -103,7 +111,10 @@ export function Recommendations({ onBack, onHome, selectedSymptoms }: Recommenda
 
   // Card de una técnica con guía a pantalla completa: no se despliega, ofrece
   // directamente el ejercicio guiado.
-  const renderGuidedCard = (tech: Technique) => (
+  const renderGuidedCard = (tech: Technique) => {
+    const Icon = TECHNIQUE_ICONS[tech.id] ?? ShieldAlert;
+
+    return (
     <div
       key={tech.id}
       className="rounded-[16px] overflow-hidden"
@@ -118,7 +129,7 @@ export function Recommendations({ onBack, onHome, selectedSymptoms }: Recommenda
           className="w-[48px] h-[48px] rounded-[12px] flex items-center justify-center shrink-0"
           style={{ background: `linear-gradient(135deg, ${tech.color}, ${tech.color}99)`, boxShadow: `0 4px 12px ${tech.color}66` }}
         >
-          <ShieldAlert size={24} color={C.white} />
+          <Icon size={24} color={C.white} />
         </div>
         <div className="text-left">
           <div className="font-sans font-[800] text-[15px] text-white">{tech.name}</div>
@@ -141,7 +152,8 @@ export function Recommendations({ onBack, onHome, selectedSymptoms }: Recommenda
         </motion.button>
       </div>
     </div>
-  );
+    );
+  };
 
   const renderTechniqueCard = (tech: Technique) => {
     if (tech.breathingPhases) return renderGuidedCard(tech);
@@ -150,6 +162,7 @@ export function Recommendations({ onBack, onHome, selectedSymptoms }: Recommenda
     const currentStep = completedSteps[tech.id] || 0;
     const totalSteps = tech.steps.length;
     const isFinished = currentStep >= totalSteps;
+    const Icon = TECHNIQUE_ICONS[tech.id] ?? ShieldAlert;
 
     return (
       <div
@@ -171,7 +184,7 @@ export function Recommendations({ onBack, onHome, selectedSymptoms }: Recommenda
               className="w-[48px] h-[48px] rounded-[12px] flex items-center justify-center"
               style={{ background: `linear-gradient(135deg, ${tech.color}, ${tech.color}99)`, boxShadow: `0 4px 12px ${tech.color}66` }}
             >
-              <ShieldAlert size={24} color={C.white} />
+              <Icon size={24} color={C.white} />
             </div>
             <div className="text-left">
               <div className="font-sans font-[800] text-[15px] text-white">{tech.name}</div>
