@@ -1,6 +1,11 @@
 import { Symptom, Technique, RecommendationSession } from "./types";
 import { C } from "./theme";
 
+// DEMO: fija una técnica como principal para cualquier combinación de síntomas.
+// Se usa para mostrar siempre la respiración guiada. Poner en `null` restaura la
+// recomendación real por síntomas (`decisions/0005`). Ver `decisions/0009`.
+export const DEMO_PINNED_TECHNIQUE_ID: string | null = "t1";
+
 export const symptoms: Symptom[] = [
   // Físicos
   { id: "s1", label: "Taquicardia", category: "fisicos" },
@@ -41,6 +46,12 @@ export const techniques: Technique[] = [
       { text: "Mantén la respiración contando hasta 7." },
       { text: "Exhala lentamente por la boca contando hasta 8." },
       { text: "Repite este ciclo 3 veces más." }
+    ],
+    // Ritmo 4-7-8. Los segundos alimentan tanto la animación como el contador.
+    breathingPhases: [
+      { kind: "inhale", label: "Inhala", instruction: "Inhala por la nariz contando mentalmente hasta 4.", seconds: 4 },
+      { kind: "hold", label: "Retén", instruction: "Mantén la respiración contando hasta 7.", seconds: 7 },
+      { kind: "exhale", label: "Exhala", instruction: "Exhala lentamente por la boca contando hasta 8.", seconds: 8 }
     ]
   },
   {

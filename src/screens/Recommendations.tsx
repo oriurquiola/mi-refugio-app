@@ -3,9 +3,10 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, ChevronDown, Check, ShieldAlert } from 'lucide-react';
 import { C } from '../theme';
 import { Technique } from '../types';
-import { symptoms, techniques } from '../data';
+import { symptoms, techniques, DEMO_PINNED_TECHNIQUE_ID } from '../data';
 import { GlassCard } from '../components/GlassCard';
 import { PsychologistCTA } from '../components/PsychologistCTA';
+import { BreathingExercise } from './BreathingExercise';
 
 interface RecommendationsProps {
   onBack: () => void;
@@ -29,11 +30,32 @@ export function Recommendations({ onBack, onHome, selectedSymptoms }: Recommenda
     .map(s => s.technique);
   const others = scored.filter(s => s.score === 0).map(s => s.technique);
 
-  const primaryTechniques = matched.length > 0 ? matched : techniques.slice(0, 1);
-  const secondaryTechniques = matched.length > 0 ? others : techniques.slice(1);
+  // DEMO: si hay una técnica fijada, va siempre como principal y el resto baja a
+  // "Otras técnicas" (ordenadas por relevancia, para que los síntomas sigan
+  // influyendo en algo). Sin fijar, manda la recomendación real de arriba.
+  const pinnedTechnique = DEMO_PINNED_TECHNIQUE_ID
+    ? techniques.find(t => t.id === DEMO_PINNED_TECHNIQUE_ID)
+    : undefined;
+
+  const primaryTechniques = pinnedTechnique
+    ? [pinnedTechnique]
+    : matched.length > 0
+      ? matched
+      : techniques.slice(0, 1);
+
+  const secondaryTechniques = pinnedTechnique
+    ? scored
+        .filter(s => s.technique.id !== pinnedTechnique.id)
+        .sort((a, b) => b.score - a.score)
+        .map(s => s.technique)
+    : matched.length > 0
+      ? others
+      : techniques.slice(1);
 
   const [expandedId, setExpandedId] = useState<string | null>(primaryTechniques[0]?.id || null);
   const [completedSteps, setCompletedSteps] = useState<Record<string, number>>({});
+  // Técnica que se está guiando a pantalla completa (null = ninguna).
+  const [guidedTechnique, setGuidedTechnique] = useState<Technique | null>(null);
 
   const toggleExpand = (id: string) => {
     setExpandedId(prev => prev === id ? null : id);
@@ -50,13 +72,84 @@ export function Recommendations({ onBack, onHome, selectedSymptoms }: Recommenda
     });
   };
 
+  // Síntomas del usuario que una técnica aborda (para los chips).
+  const symptomsFor = (tech: Technique) =>
+    matchedSymptoms.filter(s => tech.matchesSymptomIds.includes(s.id));
+
+  const renderSymptomChips = (tech: Technique) => {
+    const techSymptoms = symptomsFor(tech);
+    if (techSymptoms.length === 0) return null;
+
+    return (
+      <div className="px-[16px] pb-[12px] -mt-[4px] flex flex-wrap items-center gap-[6px]">
+        <span className="font-sans font-[600] text-[10px] w-full mb-[2px]" style={{ color: C.w40 }}>
+          Para lo que sientes ahora:
+        </span>
+        {techSymptoms.map(s => {
+          const catColor = s.category === 'fisicos' ? C.coral : s.category === 'emocionales' ? C.pink : C.lavender;
+          return (
+            <span
+              key={s.id}
+              className="px-[10px] py-[3px] rounded-[999px] font-sans font-[700] text-[10px]"
+              style={{ backgroundColor: `${catColor}26`, color: catColor, border: `1px solid ${catColor}40` }}
+            >
+              {s.label}
+            </span>
+          );
+        })}
+      </div>
+    );
+  };
+
+  // Card de una técnica con guía a pantalla completa: no se despliega, ofrece
+  // directamente el ejercicio guiado.
+  const renderGuidedCard = (tech: Technique) => (
+    <div
+      key={tech.id}
+      className="rounded-[16px] overflow-hidden"
+      style={{
+        backgroundColor: `${tech.color}1F`,
+        border: `1px solid ${tech.color}59`,
+        boxShadow: `0 8px 32px ${tech.color}33`,
+      }}
+    >
+      <div className="p-[16px] flex items-center gap-[12px]">
+        <div
+          className="w-[48px] h-[48px] rounded-[12px] flex items-center justify-center shrink-0"
+          style={{ background: `linear-gradient(135deg, ${tech.color}, ${tech.color}99)`, boxShadow: `0 4px 12px ${tech.color}66` }}
+        >
+          <ShieldAlert size={24} color={C.white} />
+        </div>
+        <div className="text-left">
+          <div className="font-sans font-[800] text-[15px] text-white">{tech.name}</div>
+          <div className="font-sans font-[400] text-[12px]" style={{ color: C.w40 }}>
+            {tech.duration} · Para {tech.forSymptoms}
+          </div>
+        </div>
+      </div>
+
+      {renderSymptomChips(tech)}
+
+      <div className="px-[16px] pb-[16px]">
+        <motion.button
+          onClick={() => setGuidedTechnique(tech)}
+          whileTap={{ scale: 0.98 }}
+          className="w-full py-[12px] rounded-[12px] font-sans font-[700] text-[13px] text-white"
+          style={{ background: `linear-gradient(135deg, ${tech.color}, ${tech.color}CC)` }}
+        >
+          Respiremos juntos
+        </motion.button>
+      </div>
+    </div>
+  );
+
   const renderTechniqueCard = (tech: Technique) => {
+    if (tech.breathingPhases) return renderGuidedCard(tech);
+
     const isExpanded = expandedId === tech.id;
     const currentStep = completedSteps[tech.id] || 0;
     const totalSteps = tech.steps.length;
     const isFinished = currentStep >= totalSteps;
-    // Síntomas del usuario que esta técnica aborda (para los chips).
-    const techSymptoms = matchedSymptoms.filter(s => tech.matchesSymptomIds.includes(s.id));
 
     return (
       <div
@@ -91,25 +184,7 @@ export function Recommendations({ onBack, onHome, selectedSymptoms }: Recommenda
         </button>
 
         {/* Chips: síntomas del usuario que esta técnica aborda */}
-        {techSymptoms.length > 0 && (
-          <div className="px-[16px] pb-[12px] -mt-[4px] flex flex-wrap items-center gap-[6px]">
-            <span className="font-sans font-[600] text-[10px] w-full mb-[2px]" style={{ color: C.w40 }}>
-              Para lo que sientes ahora:
-            </span>
-            {techSymptoms.map(s => {
-              const catColor = s.category === 'fisicos' ? C.coral : s.category === 'emocionales' ? C.pink : C.lavender;
-              return (
-                <span
-                  key={s.id}
-                  className="px-[10px] py-[3px] rounded-[999px] font-sans font-[700] text-[10px]"
-                  style={{ backgroundColor: `${catColor}26`, color: catColor, border: `1px solid ${catColor}40` }}
-                >
-                  {s.label}
-                </span>
-              );
-            })}
-          </div>
-        )}
+        {renderSymptomChips(tech)}
 
         {/* Body Accordion */}
         <AnimatePresence>
@@ -233,7 +308,10 @@ export function Recommendations({ onBack, onHome, selectedSymptoms }: Recommenda
       <section className="flex flex-col gap-[12px]">
         <div className="flex justify-between items-end">
           <h2 className="font-sans font-[700] text-[15px] text-white">Técnicas para ti 🌿</h2>
-          <span className="font-sans font-[400] text-[10px]" style={{ color: C.w40 }}>Toca cada una para ver los pasos.</span>
+          {/* La pista solo aplica a las cards que se despliegan. */}
+          {primaryTechniques.some(t => !t.breathingPhases) && (
+            <span className="font-sans font-[400] text-[10px]" style={{ color: C.w40 }}>Toca cada una para ver los pasos.</span>
+          )}
         </div>
 
         <div className="flex flex-col gap-[12px]">
@@ -261,6 +339,21 @@ export function Recommendations({ onBack, onHome, selectedSymptoms }: Recommenda
           Hacer un nuevo chequeo
         </button>
       </div>
+
+      {/*
+        Guía a pantalla completa. Va como overlay (no como pantalla nueva): tapa
+        las otras técnicas mientras dura y las devuelve intactas al salir, sin
+        perder el estado de esta pantalla.
+      */}
+      <AnimatePresence>
+        {guidedTechnique?.breathingPhases && (
+          <BreathingExercise
+            technique={guidedTechnique}
+            phases={guidedTechnique.breathingPhases}
+            onClose={() => setGuidedTechnique(null)}
+          />
+        )}
+      </AnimatePresence>
 
     </div>
   );

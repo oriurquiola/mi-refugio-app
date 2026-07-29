@@ -11,6 +11,8 @@ No borres decisiones viejas; si cambian, añade una nueva que las reemplace y en
 - `0005-recomendacion-por-sintomas.md` — Recomendaciones reales según síntomas (reemplaza alcance MVP de `0002`).
 - `0006-marco-mobile-en-desktop.md` — App enmarcada como columna mobile centrada en desktop.
 - `0007-perfil-mockup-visual.md` — Perfil como mockup visual sin datos reales; usa `mockHistory` como fuente única (stats + bitácora + historial).
+- `0008-respiracion-guiada-pantalla-completa.md` — Técnicas con `breathingPhases` ofrecen guía a pantalla completa (overlay) en vez de acordeón.
+- `0009-demo-tecnica-principal-fija.md` — DEMO: `DEMO_PINNED_TECHNIQUE_ID` fija Respiración 4-7-8 como principal. **Suspende (no revierte) `0005`**; revertir poniéndola en `null`.
 
 ## Plantilla (copiar para una decisión nueva)
 ```

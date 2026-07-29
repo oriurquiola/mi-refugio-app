@@ -34,5 +34,11 @@ _Fuente: `design.md`, `src/theme.ts`, `Contexto/ficha4d.md`. Actualizado: 2026-0
 ## Perfil como mockup visual (2026-07-28)
 - Pantalla nueva `Profile.tsx`, accesible tocando el avatar "MA" del Home. Sin datos reales ni edición (regla de `reglas.md`: sin datos personales/login/persistencia en v1). Secciones: estadísticas, bitácora (calendario) e historial de técnicas, todas derivadas de `mockHistory` (`data.ts`). Lenguaje neutro/factual, sin gamificación ("racha"/logros). Detalle y razón en `decisions/0007`.
 
+## Respiración guiada a pantalla completa (2026-07-29)
+- La card de "Respiración 4-7-8" deja de ser acordeón: mantiene título, bajada y chips, y ofrece el botón **"Respiremos juntos"** (plural inclusivo, como "Vamos a resolverlo juntos"). Abre un overlay a pantalla completa con círculo que respira al ritmo 4-7-8, anillo de arcos proporcionales, instrucción y cuenta regresiva. Referencia visual: pantalla de respiración de Calm, adaptada a nuestros tokens (marcador lavanda, no blanco puro). Grounding y Ancla conservan su acordeón. Detalle y razón en `decisions/0008`.
+
+## DEMO · Técnica principal fija (2026-07-29)
+- Solo para la demo: **Respiración 4-7-8 se muestra siempre como técnica principal**, sin importar los síntomas; Grounding y Ancla quedan siempre como adicionales (ordenadas por relevancia). **Suspende temporalmente** la recomendación real por síntomas descrita arriba y en `decisions/0005`. Se controla con `DEMO_PINNED_TECHNIQUE_ID` en `data.ts`; poniéndola en `null` vuelve el comportamiento real. Ver `decisions/0009`.
+
 ## Abierto / a decidir (impacto de diseño)
 - Mapeo real síntoma → técnica (hoy se muestran las 3). Ver `decisions/0002` y `state/current.md`.

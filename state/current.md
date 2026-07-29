@@ -1,6 +1,6 @@
 # Estado actual — Mi Refugio
 
-_Actualizado: 2026-07-28 · Sesión 04_
+_Actualizado: 2026-07-29 · Sesión 04_
 
 ## ✅ Hecho
 - App funcional: flujo HOME → SYMPTOMS → PROCESSING → RECOMMENDATIONS con transiciones `motion`. Ahora suma **PROFILE** como quinta pantalla (ver abajo).
@@ -20,8 +20,15 @@ _Actualizado: 2026-07-28 · Sesión 04_
 
 - **CTA "Hablar con un psicólogo" unificado**: extraído a `src/components/PsychologistCTA.tsx` (halo coral que respira, una vez al entrar, respeta `prefers-reduced-motion`). Se usa en Recommendations y al cierre de Profile. El flotante del Home sigue siendo `FloatingPsychologistButton`.
 - **Eliminado botón "Guardar esta sesión"** de Recommendations (era visual, sin lógica).
+- **Sombra recortada en los tabs de Síntomas** corregida: `overflow-x-auto` recortaba el `boxShadow` del tab activo; se resolvió con padding interno + márgenes negativos (`Symptoms.tsx`).
+- **Respiración guiada a pantalla completa** (`src/screens/BreathingExercise.tsx`): la card de Respiración 4-7-8 ofrece "Respiremos juntos" → overlay con círculo que escala al ritmo 4-7-8, anillo de arcos proporcionales con marcador, instrucción y cuenta regresiva. **1 ciclo (19 s)** por ser demo. Respeta `prefers-reduced-motion`. Verificado en navegador (fases, cierre, y el caso en que la respiración cae a "Otras técnicas"). Ver `decisions/0008`.
+
+- **DEMO · técnica principal fija**: `DEMO_PINNED_TECHNIQUE_ID = "t1"` en `data.ts` hace que Respiración 4-7-8 sea siempre la principal y Grounding/Ancla siempre adicionales. Verificado con síntomas coincidentes y no coincidentes. Ver `decisions/0009`.
 
 ## ⏳ Pendiente
+- **Duración de la respiración guiada:** corre 1 ciclo (19 s) pero la card sigue etiquetada "60 seg". Al salir de demo: subir a 3 ciclos (~57 s) o ajustar la etiqueta.
+- **Salir del modo demo:** poner `DEMO_PINNED_TECHNIQUE_ID` en `null` para restaurar la recomendación real por síntomas (`decisions/0005`, hoy suspendida por `0009`).
+- **Copy a revisar:** con la técnica fija, el subtítulo "Basada en lo que sientes ahora" es parcialmente inexacto. Y si los síntomas no coinciden con la respiración, su card queda sin chips.
 - Chat psicólogo: definir fallback fuera de horario (línea *4141) y confirmar destino Quédate (RM Chile) según público objetivo. Ver `decisions/0004`.
 - Persistencia: el estado se pierde al recargar (sin storage). Definir si v1 lo necesita.
 - Verificar flujo completo end-to-end < 30 s (criterio de la Ficha 4D).

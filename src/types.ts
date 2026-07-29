@@ -12,6 +12,19 @@ export interface TechniqueStep {
   text: string;
 }
 
+// Fases de una técnica de respiración guiada. `kind` define cómo se comporta el
+// círculo en pantalla: crece al inhalar, se sostiene al retener, decrece al exhalar.
+export type BreathingPhaseKind = "inhale" | "hold" | "exhale";
+
+export interface BreathingPhase {
+  kind: BreathingPhaseKind;
+  // Palabra corta bajo el círculo ("Inhala").
+  label: string;
+  // Instrucción completa que acompaña a la animación.
+  instruction: string;
+  seconds: number;
+}
+
 export interface Technique {
   id: string;
   name: string;
@@ -22,6 +35,9 @@ export interface Technique {
   // lo que el usuario selecciona. `forSymptoms` queda solo para mostrar.
   matchesSymptomIds: string[];
   steps: TechniqueStep[];
+  // Solo las técnicas de respiración con ritmo definido. Su presencia es lo que
+  // hace que la card ofrezca la guía a pantalla completa en vez del acordeón.
+  breathingPhases?: BreathingPhase[];
 }
 
 export interface RecommendationSession {
