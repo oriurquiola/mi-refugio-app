@@ -25,6 +25,8 @@ _Actualizado: 2026-07-29 · Sesión 04_
 
 - **DEMO · técnica principal fija**: `DEMO_PINNED_TECHNIQUE_ID = "t1"` en `data.ts` hace que Respiración 4-7-8 sea siempre la principal y Grounding/Ancla siempre adicionales. Verificado con síntomas coincidentes y no coincidentes. Ver `decisions/0009`.
 
+- **Presentación del Demo Day** (`src/demo-day/DemoDay.tsx` + `slides.ts`, ruta `/demo-day`): 6 diapositivas que acompañan la demo en vivo. Ruteo por pathname en `src/main.tsx` (la app no usa router); `App.tsx` y `src/screens/*` sin tocar. Navegación con ←/→ (y RePág/AvPág, Inicio/Fin), botón a `https://mi-refugio-app.vercel.app/` en pestaña nueva, foco visible de 3px, `aria-live` al cambiar de diapositiva, respeta `prefers-reduced-motion`. Sin dependencias nuevas; reutiliza `theme.ts` y las fuentes existentes. Verificado en navegador a 1920px, 1025px, 768px y 390px: consola limpia, contraste mínimo medido 4.78:1 y ningún texto visible bajo 18px (mobile) ni bajo 24px (≥1024px). `npm run lint` OK. Ver `decisions/0010`.
+
 ## ⏳ Pendiente
 - **Duración de la respiración guiada:** corre 1 ciclo (19 s) pero la card sigue etiquetada "60 seg". Al salir de demo: subir a 3 ciclos (~57 s) o ajustar la etiqueta.
 - **Salir del modo demo:** poner `DEMO_PINNED_TECHNIQUE_ID` en `null` para restaurar la recomendación real por síntomas (`decisions/0005`, hoy suspendida por `0009`).
@@ -33,6 +35,8 @@ _Actualizado: 2026-07-29 · Sesión 04_
 - Persistencia: el estado se pierde al recargar (sin storage). Definir si v1 lo necesita.
 - Verificar flujo completo end-to-end < 30 s (criterio de la Ficha 4D).
 - Unificar (opcional) la animación del CTA de Recommendations con el border beam del flotante.
+
+- **Demo Day en producción:** `/demo-day` funciona en local (Vite hace fallback a `index.html`), pero en Vercel dará 404 hasta agregar un rewrite SPA (`vercel.json`). Decidir si la presentación se muestra desde local o desde la URL pública. Ver `decisions/0010`.
 
 ## 🚧 Blockers
 - Ninguno activo.
