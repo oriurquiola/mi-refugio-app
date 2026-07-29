@@ -52,8 +52,14 @@ export function Symptoms({ onBack, onContinue }: SymptomsProps) {
         </div>
       </header>
 
-      {/* Category Tabs */}
-      <div className="flex gap-[8px] mb-[24px] overflow-x-auto pb-[4px]">
+      {/*
+        Category Tabs
+        `overflow-x-auto` crea un contexto de recorte: sin aire, el boxShadow del
+        tab activo se corta contra los bordes de la caja de scroll. El padding da
+        ese aire (>= el blur de 16px) y los márgenes negativos lo compensan para
+        que la posición visual no cambie. El scroll horizontal se mantiene.
+      */}
+      <div className="flex gap-[8px] -mx-[20px] px-[20px] -mt-[20px] pt-[20px] pb-[20px] mb-[8px] overflow-x-auto">
         {CATEGORIES.map(cat => {
           const isActive = activeCategory === cat.id;
           return (
