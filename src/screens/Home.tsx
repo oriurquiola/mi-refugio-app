@@ -55,9 +55,13 @@ export function Home({ onNavigate }: HomeProps) {
           >
             Mi Refugio
           </h1>
-          <div className="w-[32px] h-[32px] rounded-full bg-[#352e5d] flex items-center justify-center font-sans font-[700] text-[12px]">
+          <button
+            onClick={() => onNavigate("PROFILE")}
+            aria-label="Abrir perfil"
+            className="w-[32px] h-[32px] rounded-full bg-[#352e5d] flex items-center justify-center font-sans font-[700] text-[12px]"
+          >
             MA
-          </div>
+          </button>
         </div>
         <h2 className="font-sans font-[800] text-[22px] text-white">
           Hola 👋 ¿Cómo estás hoy?

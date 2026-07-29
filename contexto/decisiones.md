@@ -31,6 +31,8 @@ _Fuente: `design.md`, `src/theme.ts`, `Contexto/ficha4d.md`. Actualizado: 2026-0
 ## CTA "Hablar con un psicólogo" (2026-07-22)
 - Micro-animación de entrada tipo **border beam** (luz que recorre el borde 1 vez, suave y lenta) en el botón flotante; **halo coral** en el de Recomendaciones. Objetivo: resaltar sin alarmar (coherente con "urgencia serena"). Clic → chat con especialista de Quédate. Detalle y razón en `decisions/0004`.
 
+## Perfil como mockup visual (2026-07-28)
+- Pantalla nueva `Profile.tsx`, accesible tocando el avatar "MA" del Home. Sin datos reales ni edición (regla de `reglas.md`: sin datos personales/login/persistencia en v1). Secciones: estadísticas, bitácora (calendario) e historial de técnicas, todas derivadas de `mockHistory` (`data.ts`). Lenguaje neutro/factual, sin gamificación ("racha"/logros). Detalle y razón en `decisions/0007`.
+
 ## Abierto / a decidir (impacto de diseño)
 - Mapeo real síntoma → técnica (hoy se muestran las 3). Ver `decisions/0002` y `state/current.md`.
-- Uso de `mockHistory` en la sección "Últimas recomendaciones" de Home.

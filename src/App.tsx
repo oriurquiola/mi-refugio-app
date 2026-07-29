@@ -5,6 +5,7 @@ import { Home } from './screens/Home';
 import { Symptoms } from './screens/Symptoms';
 import { Processing } from './screens/Processing';
 import { Recommendations } from './screens/Recommendations';
+import { Profile } from './screens/Profile';
 import { BottomTabBar } from './components/BottomTabBar';
 import { FloatingPsychologistButton } from './components/FloatingPsychologistButton';
 
@@ -74,6 +75,9 @@ export default function App() {
                 onHome={() => navigate("HOME", -1)}
                 selectedSymptoms={selectedSymptoms}
               />
+            )}
+            {currentScreen === "PROFILE" && (
+              <Profile onBack={() => navigate("HOME", -1)} />
             )}
           </motion.div>
         </AnimatePresence>

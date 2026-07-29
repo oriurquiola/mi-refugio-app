@@ -1,4 +1,4 @@
-export type AppScreen = "HOME" | "SYMPTOMS" | "PROCESSING" | "RECOMMENDATIONS";
+export type AppScreen = "HOME" | "SYMPTOMS" | "PROCESSING" | "RECOMMENDATIONS" | "PROFILE";
 
 export type SymptomCategory = "fisicos" | "emocionales" | "pensamientos";
 
@@ -27,6 +27,8 @@ export interface Technique {
 export interface RecommendationSession {
   id: string;
   date: string;
+  // Fecha real ISO (YYYY-MM-DD) para ubicar el registro en el calendario del Perfil.
+  dateISO: string;
   symptomLabel: string;
   techniqueName: string;
   color: string;

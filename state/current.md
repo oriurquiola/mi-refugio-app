@@ -1,10 +1,10 @@
 # Estado actual — Mi Refugio
 
-_Actualizado: 2026-07-22 · Sesión 02_
+_Actualizado: 2026-07-28 · Sesión 04_
 
 ## ✅ Hecho
-- App funcional: flujo HOME → SYMPTOMS → PROCESSING → RECOMMENDATIONS con transiciones `motion`.
-- Datos mock completos en `src/data.ts` (18 síntomas, 3 técnicas, 2 sesiones de historial).
+- App funcional: flujo HOME → SYMPTOMS → PROCESSING → RECOMMENDATIONS con transiciones `motion`. Ahora suma **PROFILE** como quinta pantalla (ver abajo).
+- Datos mock completos en `src/data.ts` (18 síntomas, 3 técnicas, 5 sesiones de historial con `dateISO`).
 - Sistema de diseño implementado en `src/theme.ts` y documentado en `design.md`.
 - Ajustes julio 2026 aplicados (copy Home, iconos outline, padding síntomas, Processing 7 s). Ver `Contexto/decisiones.md`.
 - Entorno local operativo: Node v24.18.0 + npm 11.16.0, `npm install` hecho, server Vite corriendo en `http://localhost:3000`.
@@ -13,24 +13,26 @@ _Actualizado: 2026-07-22 · Sesión 02_
 - **Botón "Hablar con un psicólogo"** (flotante Home + CTA Recommendations): clic abre chat directo de Quédate (`src/config.ts`). Animación de entrada: **border beam** en el flotante (recorre el borde 1 vez, 2.8 s, fade in/out suave, `@property` + keyframes en `src/index.css`) y **halo coral que respira** en Recommendations. Verificado en navegador. Ver `decisions/0004`.
 - **Recomendación real según síntomas**: `matchesSymptomIds` en `data.ts` + score/orden en `Recommendations.tsx` (coincidentes primero + "Otras técnicas" abajo, chips por técnica). Verificado en navegador. Ver `decisions/0005`.
 - **Marco mobile en desktop**: `App.tsx` enmarca la app como columna centrada `max-w-[440px]` con `translateZ(0)` para contener los `position: fixed`. Verificado a 1280px. Ver `decisions/0006`.
+- **Eliminado footer "Mi historial"** del Home (`Home.tsx`), no tenía acción.
+- **Git/remoto**: todo el trabajo está en `origin/main` (commit `aef3b60`). El repo auto-sincroniza a GitHub (`oriurquiola/mi-refugio-app`). `gh` NO está instalado → PRs vía API con la credencial del push. PR #1 creado y luego cerrado; cambio aplicado directo a `main` a pedido de la usuaria.
+- **Sistema de memoria reforzado**: `contexto/` (`design.md`, `decisiones.md`, `reglas.md`) es fuente de verdad; se lee antes de cualquier cambio y se avisa si algo pedido la contradice. `reglas.md` creado (espejo de `AGENTS.md` §3).
+- **Pantalla Perfil** (`src/screens/Profile.tsx`, `AppScreen "PROFILE"`): mockup visual, sin datos reales ni edición. Accesible tocando el avatar "MA" del Home. Secciones: estadísticas, bitácora (calendario del mes) e historial de técnicas — todas derivadas de `mockHistory`. Resuelve el pendiente de "mockHistory no se consume". Verificado en navegador (flujo Home → Perfil → back, consola limpia, `npm run lint` OK). Ver `decisions/0007`.
+
+- **CTA "Hablar con un psicólogo" unificado**: extraído a `src/components/PsychologistCTA.tsx` (halo coral que respira, una vez al entrar, respeta `prefers-reduced-motion`). Se usa en Recommendations y al cierre de Profile. El flotante del Home sigue siendo `FloatingPsychologistButton`.
+- **Eliminado botón "Guardar esta sesión"** de Recommendations (era visual, sin lógica).
 
 ## ⏳ Pendiente
-- `mockHistory` está definido pero **no se consume** en ninguna pantalla → decidir si Home debe leerlo desde `data.ts`.
-- Botón "Guardar esta sesión" (Recommendations) es visual, sin lógica.
 - Chat psicólogo: definir fallback fuera de horario (línea *4141) y confirmar destino Quédate (RM Chile) según público objetivo. Ver `decisions/0004`.
 - Persistencia: el estado se pierde al recargar (sin storage). Definir si v1 lo necesita.
 - Verificar flujo completo end-to-end < 30 s (criterio de la Ficha 4D).
 - Unificar (opcional) la animación del CTA de Recommendations con el border beam del flotante.
 
-## 🔄 En progreso (sesión aparte)
-- Fix de 3 errores `tsc` de `Home.tsx`/`Processing.tsx`: `npm run lint` ahora pasa **limpio (0 errores)** en este dir → aparentemente resuelto. Confirmar cierre del chip antes de dar por cerrada la tarea.
-
 ## 🚧 Blockers
 - Ninguno activo.
 
 ## ▶️ Próximas acciones sugeridas
-1. Decidir si conectar `mockHistory` a la sección "Últimas recomendaciones" de Home.
-2. Afinar el mapeo `matchesSymptomIds` con criterio clínico si hace falta (ver `decisions/0005`).
+1. Afinar el mapeo `matchesSymptomIds` con criterio clínico si hace falta (ver `decisions/0005`).
+2. Si se define backend en v2: reemplazar `decisions/0007` (Perfil mockup) por una versión con datos reales/edición.
 
 ## 🖥️ Entorno
 - Node en `/usr/local/bin` (v24.18.0). `npm` idem.

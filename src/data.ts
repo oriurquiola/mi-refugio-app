@@ -80,6 +80,7 @@ export const mockHistory: RecommendationSession[] = [
   {
     id: "h1",
     date: "Hoy",
+    dateISO: "2026-07-28",
     symptomLabel: "Falta de aire",
     techniqueName: "Respiración 4-7-8",
     color: C.lavender
@@ -87,7 +88,32 @@ export const mockHistory: RecommendationSession[] = [
   {
     id: "h2",
     date: "Ayer",
+    dateISO: "2026-07-27",
     symptomLabel: "Miedo intenso",
+    techniqueName: "Ancla de seguridad",
+    color: C.amber
+  },
+  {
+    id: "h3",
+    date: "24 jul",
+    dateISO: "2026-07-24",
+    symptomLabel: "Desconexión",
+    techniqueName: "Grounding 5-4-3-2-1",
+    color: C.teal
+  },
+  {
+    id: "h4",
+    date: "21 jul",
+    dateISO: "2026-07-21",
+    symptomLabel: "Taquicardia",
+    techniqueName: "Respiración 4-7-8",
+    color: C.lavender
+  },
+  {
+    id: "h5",
+    date: "15 jul",
+    dateISO: "2026-07-15",
+    symptomLabel: "Angustia",
     techniqueName: "Ancla de seguridad",
     color: C.amber
   }
