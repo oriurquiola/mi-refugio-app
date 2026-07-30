@@ -14,7 +14,7 @@ _Actualizado: 2026-07-29 · Sesión 05_
 - **Recomendación real según síntomas**: `matchesSymptomIds` en `data.ts` + score/orden en `Recommendations.tsx` (coincidentes primero + "Otras técnicas" abajo, chips por técnica). Verificado en navegador. Ver `decisions/0005`.
 - **Marco mobile en desktop**: `App.tsx` enmarca la app como columna centrada `max-w-[440px]` con `translateZ(0)` para contener los `position: fixed`. Verificado a 1280px. Ver `decisions/0006`.
 - **Eliminado footer "Mi historial"** del Home (`Home.tsx`), no tenía acción.
-- **Git/remoto**: todo el trabajo está en `origin/main` (commit `534cb77`, 2026-07-29: presentación del Demo Day). El repo auto-sincroniza a GitHub (`oriurquiola/mi-refugio-app`). `gh` NO está instalado → PRs vía API con la credencial del push. PR #1 creado y luego cerrado; cambio aplicado directo a `main` a pedido de la usuaria.
+- **Git/remoto**: todo el trabajo está en `origin/main` (commit `1455fb0`, 2026-07-29: respiración a 3 ciclos). Queda **sin commitear a propósito** `.claude/settings.local.json` (solo un permiso local de la sesión). El repo auto-sincroniza a GitHub (`oriurquiola/mi-refugio-app`). `gh` NO está instalado → PRs vía API con la credencial del push. PR #1 creado y luego cerrado; cambio aplicado directo a `main` a pedido de la usuaria.
 - **Sistema de memoria reforzado**: `contexto/` (`design.md`, `decisiones.md`, `reglas.md`) es fuente de verdad; se lee antes de cualquier cambio y se avisa si algo pedido la contradice. `reglas.md` creado (espejo de `AGENTS.md` §3).
 - **Pantalla Perfil** (`src/screens/Profile.tsx`, `AppScreen "PROFILE"`): mockup visual, sin datos reales ni edición. Accesible tocando el avatar "MA" del Home. Secciones: estadísticas, bitácora (calendario del mes) e historial de técnicas — todas derivadas de `mockHistory`. Resuelve el pendiente de "mockHistory no se consume". Verificado en navegador (flujo Home → Perfil → back, consola limpia, `npm run lint` OK). Ver `decisions/0007`.
 
@@ -41,8 +41,9 @@ _Actualizado: 2026-07-29 · Sesión 05_
 - Ninguno activo.
 
 ## ▶️ Próximas acciones sugeridas
-1. Afinar el mapeo `matchesSymptomIds` con criterio clínico si hace falta (ver `decisions/0005`).
-2. Si se define backend en v2: reemplazar `decisions/0007` (Perfil mockup) por una versión con datos reales/edición.
+1. Verificar el camino `prefers-reduced-motion` de la respiración guiada en un navegador real: quedó revisado en código (puntos + texto sobreviven), pero las herramientas de preview no exponen ese toggle.
+2. Afinar el mapeo `matchesSymptomIds` con criterio clínico si hace falta (ver `decisions/0005`).
+3. Si se define backend en v2: reemplazar `decisions/0007` (Perfil mockup) por una versión con datos reales/edición.
 
 ## 🖥️ Entorno
 - Node en `/usr/local/bin` (v24.18.0). `npm` idem.

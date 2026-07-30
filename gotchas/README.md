@@ -30,6 +30,16 @@ Cada entrada: síntoma → causa → solución. Añadir aquí cualquier trampa q
 - **Chequeo:** `document.visibilityState` en la consola del preview.
 - **Solución para verificar:** tomar screenshots seguidos "bombea" frames y destraba la transición. Si hace falta llegar a una pantalla profunda (ej. Recommendations, detrás de los 7 s de Processing), cambiar temporalmente el `useState` inicial de `App.tsx` a esa pantalla (con `selectedSymptoms` de prueba), verificar, y **revertir**. Confirmar el contenido con `get_page_text`/DOM, que no depende del render.
 
+## G8 · Errores de consola que ya no existen (buffer acumulado del preview)
+- **Síntoma:** `read_console_messages` devuelve errores de React que no corresponden al código actual. Caso real (2026-07-29): *"The final argument passed to useEffect changed size between renders"*, disparado porque el **hot-reload** aplicó una edición que agrandaba el array de dependencias con el componente ya montado.
+- **Causa:** el buffer de consola de la herramienta **no se limpia al recargar**: acumula toda la sesión, y los errores de HMR conviven con los de una carga limpia.
+- **Solución:** `console.log('=== MARCA ===')`, recargar, correr el flujo y volver a leer: lo que importa es lo que aparece **después** de la marca. Un error de HMR no se reproduce tras un reload completo.
+
+## G9 · Fotografiar una animación corta (< 1 s)
+- **Síntoma:** una animación de 0,8 s (ej. el pulso de fin de ciclo en `BreathingExercise.tsx`) es imposible de capturar con `screenshot`: la latencia entre esperar y disparar la captura es mayor que la propia animación. Los `wait` del preview además tardan bastante más que su valor nominal.
+- **Solución:** congelar el frame desde la consola. Un `setInterval` de 25 ms detecta el instante (ej. cambio del texto de ciclo), a los ~150 ms lee `getComputedStyle` y luego reescribe `opacity`/`transform` con `setProperty(..., 'important')` **cada 16 ms** — hace falta reescribir porque `motion` y React pisan el `style` en cada render. Sin `timeout`: se suelta a mano con `clearInterval`. Es un frame real de la animación real, no un mockup.
+- **Alternativa para medir (no para ver):** muestrear cada 50 ms a `window.__algo` y leer el array después. Así se midieron el corte exacto (19,00 s), la curva del pulso (0,86 → 0) y la ausencia de salto en el empalme de escala.
+
 ## G5 · La UI se ve "estirada" en desktop (RESUELTO)
 - **Historia:** la app se estiraba a todo el ancho en desktop.
 - **Solución:** `App.tsx` ahora enmarca la app en una columna mobile centrada (`max-w-[440px]`) con `translateZ(0)` para contener los `position: fixed`. Ver `decisions/0006`. En mobile no cambia.

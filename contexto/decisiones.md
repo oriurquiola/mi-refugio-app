@@ -40,5 +40,11 @@ _Fuente: `design.md`, `src/theme.ts`, `Contexto/ficha4d.md`. Actualizado: 2026-0
 ## DEMO · Técnica principal fija (2026-07-29)
 - Solo para la demo: **Respiración 4-7-8 se muestra siempre como técnica principal**, sin importar los síntomas; Grounding y Ancla quedan siempre como adicionales (ordenadas por relevancia). **Suspende temporalmente** la recomendación real por síntomas descrita arriba y en `decisions/0005`. Se controla con `DEMO_PINNED_TECHNIQUE_ID` en `data.ts`; poniéndola en `null` vuelve el comportamiento real. Ver `decisions/0009`.
 
+## Respiración guiada: 3 ciclos y corte visible (2026-07-29)
+- La guía pasa de 1 a **3 ciclos (57 s)**, que es lo que promete la etiqueta "60 seg" de la card. Se descartó una micro-pausa de 1,5 s entre ciclos (habría dado 60 s exactos) para **no cortar el ritmo 4-7-8** a alguien en crisis: la continuidad pesa más que cuadrar el número.
+- El fin de ciclo se marca con **tres señales a la vez**: el marcador vuelve arriba, pulsa un anillo lavanda (0,8 s, escala 1 → 1.12, se despega del anillo de arcos) y avanza un indicador de **3 puntos + "Respiración N de 3"**.
+- Copy **"Respiración"**, no "Ciclo": menos técnico, regla de tono de `reglas.md`. Y **"N de 3"** en vez de solo puntos porque es lo único que sobrevive a `prefers-reduced-motion` y a un lector de pantalla.
+- Detalle y razón en `decisions/0011`.
+
 ## Abierto / a decidir (impacto de diseño)
 - Mapeo real síntoma → técnica (hoy se muestran las 3). Ver `decisions/0002` y `state/current.md`.
