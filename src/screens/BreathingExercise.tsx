@@ -23,14 +23,24 @@ const ARC_GAP = 10;
 const SCALE_MIN = 0.52;
 const SCALE_MAX = 1;
 
+// Ciclos completos que corre la guía. Con el ritmo 4-7-8 son 3 × 19 s = 57 s,
+// que es lo que promete la etiqueta "60 seg" de la card (`data.ts`).
+const BREATHING_CYCLES = 3;
+
+// Duración del pulso que marca el cierre de un ciclo.
+const CYCLE_PULSE_SECONDS = 0.8;
+
 export function BreathingExercise({ technique, phases, onClose }: BreathingExerciseProps) {
   const reduceMotion = useReducedMotion();
 
-  const totalSeconds = useMemo(
+  // Un ciclo = la suma de las fases. La guía repite ese mismo ciclo.
+  const cycleSeconds = useMemo(
     () => phases.reduce((sum, p) => sum + p.seconds, 0),
     [phases]
   );
+  const totalSeconds = cycleSeconds * BREATHING_CYCLES;
 
+  const [cycleIndex, setCycleIndex] = useState(0);
   const [phaseIndex, setPhaseIndex] = useState(0);
   const [secondsLeft, setSecondsLeft] = useState(phases[0].seconds);
   const [isFinished, setIsFinished] = useState(false);
@@ -49,19 +59,25 @@ export function BreathingExercise({ technique, phases, onClose }: BreathingExerc
         return;
       }
 
+      // En qué ciclo vamos y cuánto llevamos dentro de ese ciclo. El `min`
+      // protege del último tick antes del corte, que podría caer fuera de rango.
+      const cycle = Math.min(Math.floor(elapsed / cycleSeconds), BREATHING_CYCLES - 1);
+      const inCycle = elapsed - cycle * cycleSeconds;
+      setCycleIndex(cycle);
+
       let boundary = 0;
       for (let i = 0; i < phases.length; i++) {
         boundary += phases[i].seconds;
-        if (elapsed < boundary) {
+        if (inCycle < boundary) {
           setPhaseIndex(i);
-          setSecondsLeft(Math.ceil(boundary - elapsed));
+          setSecondsLeft(Math.ceil(boundary - inCycle));
           break;
         }
       }
     }, 100);
 
     return () => clearInterval(id);
-  }, [phases, totalSeconds]);
+  }, [phases, cycleSeconds, totalSeconds]);
 
   // Arcos proporcionales a la duración de cada fase. Como los segmentos son
   // proporcionales al tiempo, el marcador puede girar a velocidad constante y
@@ -69,12 +85,12 @@ export function BreathingExercise({ technique, phases, onClose }: BreathingExerc
   const arcs = useMemo(() => {
     let offsetSeconds = 0;
     return phases.map(phase => {
-      const length = (phase.seconds / totalSeconds) * RING_CIRCUMFERENCE;
-      const start = (offsetSeconds / totalSeconds) * RING_CIRCUMFERENCE;
+      const length = (phase.seconds / cycleSeconds) * RING_CIRCUMFERENCE;
+      const start = (offsetSeconds / cycleSeconds) * RING_CIRCUMFERENCE;
       offsetSeconds += phase.seconds;
       return { key: phase.kind, length, start };
     });
-  }, [phases, totalSeconds]);
+  }, [phases, cycleSeconds]);
 
   // Keyframes de escala alineados a los límites de fase.
   const { scaleKeyframes, scaleTimes } = useMemo(() => {
@@ -90,11 +106,11 @@ export function BreathingExercise({ technique, phases, onClose }: BreathingExerc
       const target =
         phase.kind === 'inhale' ? SCALE_MAX : phase.kind === 'exhale' ? SCALE_MIN : keyframes[keyframes.length - 1];
       keyframes.push(target);
-      times.push(elapsed / totalSeconds);
+      times.push(elapsed / cycleSeconds);
     }
 
     return { scaleKeyframes: keyframes, scaleTimes: times };
-  }, [phases, totalSeconds]);
+  }, [phases, cycleSeconds]);
 
   const currentPhase = phases[phaseIndex];
   const color = technique.color;
@@ -153,13 +169,29 @@ export function BreathingExercise({ technique, phases, onClose }: BreathingExerc
               ))}
             </svg>
 
-            {/* Marcador que recorre el anillo una vez por ciclo. */}
+            {/* Pulso que marca el cierre de un ciclo. El `key` lo remonta en
+                cada corte para que vuelva a dispararse. */}
+            {!reduceMotion && cycleIndex > 0 && (
+              <motion.div
+                key={cycleIndex}
+                // `inset` alineado al radio del anillo (r=124 en un box de 280).
+                className="absolute inset-[15px] rounded-full"
+                style={{ border: `2px solid ${color}` }}
+                initial={{ opacity: 0.9, scale: 1 }}
+                animate={{ opacity: 0, scale: 1.12 }}
+                transition={{ duration: CYCLE_PULSE_SECONDS, ease: 'easeOut' }}
+                aria-hidden="true"
+              />
+            )}
+
+            {/* Marcador que recorre el anillo una vez por ciclo: vuelve arriba
+                en cada corte, y eso también marca el cambio de ciclo. */}
             {!reduceMotion && (
               <motion.div
                 className="absolute inset-0"
                 initial={{ rotate: 0 }}
                 animate={{ rotate: 360 }}
-                transition={{ duration: totalSeconds, ease: 'linear' }}
+                transition={{ duration: cycleSeconds, ease: 'linear', repeat: BREATHING_CYCLES - 1 }}
                 aria-hidden="true"
               >
                 <div
@@ -188,7 +220,12 @@ export function BreathingExercise({ technique, phases, onClose }: BreathingExerc
                 transition={
                   reduceMotion
                     ? { duration: 0.3 }
-                    : { duration: totalSeconds, times: scaleTimes, ease: 'easeInOut' }
+                    : {
+                        duration: cycleSeconds,
+                        times: scaleTimes,
+                        ease: 'easeInOut',
+                        repeat: BREATHING_CYCLES - 1,
+                      }
                 }
               />
             </div>
@@ -201,18 +238,36 @@ export function BreathingExercise({ technique, phases, onClose }: BreathingExerc
             </div>
           </div>
 
-          {/* Fase + instrucción */}
-          <div className="flex flex-col items-center gap-[10px] text-center min-h-[104px]">
+          {/* Fase + instrucción + en qué respiración vamos */}
+          <div className="flex flex-col items-center gap-[10px] text-center min-h-[150px]">
             <span className="font-sans font-[800] text-[24px] text-white">
               {currentPhase.label}
             </span>
             <p
               className="font-sans font-[500] text-[15px] max-w-[300px]"
               style={{ color: C.w80, lineHeight: 1.55 }}
-              aria-live="polite"
             >
               {currentPhase.instruction}
             </p>
+
+            {/* Un punto por ciclo: el actual encendido, los ya hechos atenuados.
+                El texto de abajo es la versión accesible de lo mismo. */}
+            <div className="flex items-center gap-[8px] mt-[6px]" aria-hidden="true">
+              {Array.from({ length: BREATHING_CYCLES }).map((_, i) => (
+                <div
+                  key={i}
+                  className="w-[8px] h-[8px] rounded-full"
+                  style={{
+                    backgroundColor: i > cycleIndex ? C.w20 : color,
+                    opacity: i < cycleIndex ? 0.45 : 1,
+                    boxShadow: i === cycleIndex ? `0 0 8px ${color}` : 'none',
+                  }}
+                />
+              ))}
+            </div>
+            <span className="font-sans font-[500] text-[12px]" style={{ color: C.w60 }} aria-live="polite">
+              Respiración {cycleIndex + 1} de {BREATHING_CYCLES}
+            </span>
           </div>
         </div>
       ) : (

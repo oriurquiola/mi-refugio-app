@@ -10,7 +10,7 @@ Las técnicas con **ritmo de respiración definido** dejan de ser acordeón y of
 - **Datos:** `Technique.breathingPhases?: BreathingPhase[]` (`types.ts`). Solo `t1` lo tiene hoy. **Su presencia es lo que decide el comportamiento de la card**, no la posición ni un flag aparte: si una técnica futura suma fases, hereda la guía sin tocar `Recommendations.tsx`.
 - **Card guiada** (`renderGuidedCard`): mantiene título, bajada y chips de síntomas, y reemplaza el acordeón por el botón **"Respiremos juntos"** (plural inclusivo, coherente con "Vamos a resolverlo juntos").
 - **`BreathingExercise.tsx`:** overlay `fixed inset-0 z-[60]` (no una `AppScreen` nueva). Círculo con gradiente que escala 0.52 → 1 al inhalar, se sostiene en la retención y vuelve al mínimo al exhalar; anillo con **arcos proporcionales a 4/7/8** y marcador que da **una vuelta por ciclo a velocidad constante** — posible justamente porque los arcos son proporcionales al tiempo. Instrucción completa + segundos restantes en pantalla.
-- **Duración:** **1 ciclo (19 s)** por ahora, decisión explícita de la usuaria por ser una demo.
+- **Duración:** **1 ciclo (19 s)** por ahora, decisión explícita de la usuaria por ser una demo. → **Actualizado por `0011`: 3 ciclos (57 s) con corte de ciclo visible.**
 - **Reduced motion:** sin escalado ni giro; solo fase, instrucción y cuenta regresiva.
 
 ## Razón

@@ -45,7 +45,7 @@ export const techniques: Technique[] = [
       { text: "Inhala por la nariz contando mentalmente hasta 4." },
       { text: "Mantén la respiración contando hasta 7." },
       { text: "Exhala lentamente por la boca contando hasta 8." },
-      { text: "Repite este ciclo 3 veces más." }
+      { text: "Repite el ciclo 3 veces en total." }
     ],
     // Ritmo 4-7-8. Los segundos alimentan tanto la animación como el contador.
     breathingPhases: [

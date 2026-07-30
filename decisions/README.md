@@ -13,6 +13,8 @@ No borres decisiones viejas; si cambian, añade una nueva que las reemplace y en
 - `0007-perfil-mockup-visual.md` — Perfil como mockup visual sin datos reales; usa `mockHistory` como fuente única (stats + bitácora + historial).
 - `0008-respiracion-guiada-pantalla-completa.md` — Técnicas con `breathingPhases` ofrecen guía a pantalla completa (overlay) en vez de acordeón.
 - `0009-demo-tecnica-principal-fija.md` — DEMO: `DEMO_PINNED_TECHNIQUE_ID` fija Respiración 4-7-8 como principal. **Suspende (no revierte) `0005`**; revertir poniéndola en `null`.
+- `0010-presentacion-demo-day.md` — Presentación del Demo Day en `/demo-day`, ruteo por pathname en `main.tsx`.
+- `0011-respiracion-tres-ciclos.md` — Guía de respiración a 3 ciclos (57 s) con corte de ciclo visible. **Actualiza el punto "Duración" de `0008`.**
 
 ## Plantilla (copiar para una decisión nueva)
 ```
