@@ -121,6 +121,28 @@ export function BreathingExercise({ technique, phases, onClose }: BreathingExerc
   const currentPhase = phases[phaseIndex];
   const color = technique.color;
 
+  // Relevo entre el ejercicio y el cierre. El círculo del último exhale mide
+  // ~115 px y el del cierre 120 px: al fundirse uno en otro, el círculo parece
+  // quedarse y asentarse mientras el anillo y los textos se disuelven alrededor.
+  // Por eso el efecto es un fundido con escala y no un desplazamiento: cualquier
+  // recorrido entre ambos dependería de la altura del texto de cierre, que
+  // cambia con el ancho de pantalla.
+  const exerciseMotion = reduceMotion
+    ? { exit: { opacity: 0 }, transition: { duration: 0.3 } }
+    : { exit: { opacity: 0, scale: 0.97 }, transition: { duration: 0.5, ease: 'easeInOut' as const } };
+
+  const completionMotion = reduceMotion
+    ? {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        transition: { duration: 0.3 },
+      }
+    : {
+        initial: { opacity: 0, scale: 0.94 },
+        animate: { opacity: 1, scale: 1 },
+        transition: { duration: 0.7, ease: 'easeOut' as const, delay: 0.15 },
+      };
+
   // Entrada/salida de los textos de fase: el mismo efecto que los mensajes de
   // `Processing.tsx` (desplazamiento + desenfoque). Con reduced motion el
   // relevo es un fundido seco, sin movimiento ni blur.
@@ -167,8 +189,26 @@ export function BreathingExercise({ technique, phases, onClose }: BreathingExerc
         <div className="w-[44px]" aria-hidden="true" />
       </div>
 
+      {/* El ejercicio y el cierre se relevan con un fundido. Van absolutos
+          dentro de este contenedor para poder convivir durante la transición
+          sin que el layout salte, y `AnimatePresence` va otra vez sin
+          `mode="wait"` por lo mismo que en `decisions/0012`.
+
+          OJO: acá **no** va `initial={false}`. Ese flag se propaga por contexto
+          a todos los `motion` descendientes y les cancela la animación de
+          entrada, que es justo de lo que viven el marcador del anillo, el
+          círculo que respira y el pulso de fin de ciclo: los tres quedan
+          clavados en su último keyframe. El bloque del ejercicio no define
+          `initial`/`animate` (solo `exit`), así que sin el flag tampoco aparece
+          ninguna animación de entrada indeseada. */}
+      <div className="relative flex-1 w-full">
+      <AnimatePresence>
       {!isFinished ? (
-        <div className="flex-1 w-full flex flex-col items-center justify-center gap-[40px]">
+        <motion.div
+          key="ejercicio"
+          className="absolute inset-0 flex flex-col items-center justify-center gap-[40px]"
+          {...exerciseMotion}
+        >
           {/* Círculo + anillo */}
           <div className="relative" style={{ width: RING_SIZE, height: RING_SIZE }}>
             <svg
@@ -311,9 +351,13 @@ export function BreathingExercise({ technique, phases, onClose }: BreathingExerc
               Respiración {cycleIndex + 1} de {BREATHING_CYCLES}
             </span>
           </div>
-        </div>
+        </motion.div>
       ) : (
-        <div className="flex-1 w-full flex flex-col items-center justify-center gap-[24px] text-center">
+        <motion.div
+          key="cierre"
+          className="absolute inset-0 flex flex-col items-center justify-center gap-[24px] text-center"
+          {...completionMotion}
+        >
           <div
             className="w-[120px] h-[120px] rounded-full"
             style={{
@@ -328,8 +372,10 @@ export function BreathingExercise({ technique, phases, onClose }: BreathingExerc
               Tómate unos segundos con esa calma. Puedes repetirlo las veces que necesites.
             </p>
           </div>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
+      </div>
 
       {/* Acción de cierre */}
       <button

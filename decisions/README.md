@@ -15,7 +15,7 @@ No borres decisiones viejas; si cambian, añade una nueva que las reemplace y en
 - `0009-demo-tecnica-principal-fija.md` — DEMO: `DEMO_PINNED_TECHNIQUE_ID` fija una técnica como principal. **Revertida el 2026-08-02** (pin en `null`, `0005` rige de nuevo); la constante queda como interruptor para demos futuras.
 - `0010-presentacion-demo-day.md` — Presentación del Demo Day en `/demo-day`, ruteo por pathname en `main.tsx`. **Retirada el 2026-08-02** (código en el historial de git).
 - `0011-respiracion-tres-ciclos.md` — Guía de respiración a 3 ciclos (57 s) con corte de ciclo visible. **Actualiza el punto "Duración" de `0008`.**
-- `0012-relevo-animado-textos-respiracion.md` — Fase e instrucción se relevan animadas (efecto de los mensajes de `Processing`), sin `mode="wait"` por G7 y con alto fijo. Detalla `0008` y `0011`.
+- `0012-relevo-animado-textos-respiracion.md` — Dos relevos animados en la respiración guiada: fase+instrucción por fase, y ejercicio → cierre "¡Muy bien!". Ambos sin `mode="wait"` por G7. Ojo con `initial={false}` (ver G10). Detalla `0008` y `0011`.
 
 ## Plantilla (copiar para una decisión nueva)
 ```
