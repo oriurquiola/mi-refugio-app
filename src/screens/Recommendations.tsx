@@ -346,8 +346,8 @@ export function Recommendations({ onBack, onHome, selectedSymptoms }: Recommenda
         <PsychologistCTA />
         <button
           onClick={onHome}
-          className="w-full py-[14px] font-sans font-[600] text-[12px] text-center"
-          style={{ color: C.w60 }}
+          className="w-full py-[14px] font-sans font-[600] text-[13px] text-center"
+          style={{ color: C.w70 }}
         >
           Hacer un nuevo chequeo
         </button>

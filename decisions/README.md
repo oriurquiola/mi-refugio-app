@@ -16,6 +16,7 @@ No borres decisiones viejas; si cambian, añade una nueva que las reemplace y en
 - `0010-presentacion-demo-day.md` — Presentación del Demo Day en `/demo-day`, ruteo por pathname en `main.tsx`. **Retirada el 2026-08-02** (código en el historial de git).
 - `0011-respiracion-tres-ciclos.md` — Guía de respiración a 3 ciclos (57 s) con corte de ciclo visible. **Actualiza el punto "Duración" de `0008`.**
 - `0012-relevo-animado-textos-respiracion.md` — Dos relevos animados en la respiración guiada: fase+instrucción por fase, y ejercicio → cierre "¡Muy bien!". Ambos sin `mode="wait"` por G7. Ojo con `initial={false}` (ver G10). Detalla `0008` y `0011`.
+- `0013-cierre-respiracion-icono-repetir-estrellas.md` — Cierre de la respiración: ícono `Check`, botón "Repetir técnica" (reinicia en el lugar, necesita `runId`), estrellas de fondo, y token `w70` para los secundarios de texto.
 
 ## Plantilla (copiar para una decisión nueva)
 ```

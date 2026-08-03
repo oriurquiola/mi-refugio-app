@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { X } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 import { C } from '../theme';
 import { Technique, BreathingPhase } from '../types';
 
@@ -30,6 +30,9 @@ const BREATHING_CYCLES = 3;
 // Duración del pulso que marca el cierre de un ciclo.
 const CYCLE_PULSE_SECONDS = 0.8;
 
+// Estrellas del fondo de la pantalla de cierre.
+const STAR_COUNT = 8;
+
 // Alto fijo del bloque "fase + instrucción". Durante la transición conviven el
 // texto saliente y el entrante, ambos absolutos, así que el contenedor no puede
 // depender de su contenido o el layout saltaría en cada cambio de fase. Cubre la
@@ -50,6 +53,36 @@ export function BreathingExercise({ technique, phases, onClose }: BreathingExerc
   const [phaseIndex, setPhaseIndex] = useState(0);
   const [secondsLeft, setSecondsLeft] = useState(phases[0].seconds);
   const [isFinished, setIsFinished] = useState(false);
+  // Cuenta de arranques. Existe solo para volver a disparar el temporizador al
+  // repetir: `phases`, `cycleSeconds` y `totalSeconds` no cambian entre una
+  // corrida y la siguiente, así que sin esto el efecto no se re-ejecutaría.
+  const [runId, setRunId] = useState(0);
+
+  // Reinicia el ejercicio sin cerrar el overlay. Las animaciones (marcador,
+  // círculo, pulso) se reinician solas: el bloque del ejercicio se desmonta al
+  // terminar y vuelve a montarse acá.
+  const repeatTechnique = () => {
+    setCycleIndex(0);
+    setPhaseIndex(0);
+    setSecondsLeft(phases[0].seconds);
+    setIsFinished(false);
+    setRunId(id => id + 1);
+  };
+
+  // Posiciones de las estrellas del cierre. Se calculan una sola vez a
+  // propósito: en `Processing.tsx` salen de `Math.random()` en el cuerpo del
+  // render, así que se reubican en cada re-render (allá dura 7 s y no se nota).
+  // Esta pantalla se queda, y unas estrellas que saltan delatarían el truco.
+  const stars = useMemo(
+    () =>
+      Array.from({ length: STAR_COUNT }, () => ({
+        top: `${Math.random() * 100}%`,
+        left: `${Math.random() * 100}%`,
+        duration: 1.5 + Math.random(),
+        delay: Math.random(),
+      })),
+    []
+  );
 
   // Un solo intervalo contra un timestamp inicial: no acumula deriva y no
   // depende de requestAnimationFrame (que el navegador estrangula si la
@@ -83,7 +116,7 @@ export function BreathingExercise({ technique, phases, onClose }: BreathingExerc
     }, 100);
 
     return () => clearInterval(id);
-  }, [phases, cycleSeconds, totalSeconds]);
+  }, [phases, cycleSeconds, totalSeconds, runId]);
 
   // Arcos proporcionales a la duración de cada fase. Como los segmentos son
   // proporcionales al tiempo, el marcador puede girar a velocidad constante y
@@ -358,14 +391,36 @@ export function BreathingExercise({ technique, phases, onClose }: BreathingExerc
           className="absolute inset-0 flex flex-col items-center justify-center gap-[24px] text-center"
           {...completionMotion}
         >
+          {/* Estrellas de fondo, el mismo efecto que `Processing.tsx`. Viven
+              dentro del bloque de cierre, así que entran y salen con su
+              fundido. Con reduced motion quedan fijas y tenues en vez de
+              titilar en bucle. */}
+          <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+            {stars.map((star, i) => (
+              <motion.div
+                key={i}
+                className="absolute bg-white rounded-full w-[2px] h-[2px]"
+                style={{ top: star.top, left: star.left, opacity: reduceMotion ? 0.35 : undefined }}
+                animate={reduceMotion ? undefined : { opacity: [0.1, 0.8, 0.1] }}
+                transition={
+                  reduceMotion
+                    ? undefined
+                    : { duration: star.duration, repeat: Infinity, delay: star.delay }
+                }
+              />
+            ))}
+          </div>
+
           <div
-            className="w-[120px] h-[120px] rounded-full"
+            className="w-[120px] h-[120px] rounded-full flex items-center justify-center"
             style={{
               background: `radial-gradient(circle at 32% 28%, ${color}, ${color}55 75%)`,
               boxShadow: `0 0 60px ${color}4D`,
             }}
             aria-hidden="true"
-          />
+          >
+            <Check size={44} color={C.white} strokeWidth={2.5} />
+          </div>
           <div className="flex flex-col gap-[8px]">
             <h2 className="font-sans font-[800] text-[22px] text-white">¡Muy bien!</h2>
             <p className="font-sans font-[500] text-[15px] max-w-[280px]" style={{ color: C.w80, lineHeight: 1.55 }}>
@@ -377,18 +432,37 @@ export function BreathingExercise({ technique, phases, onClose }: BreathingExerc
       </AnimatePresence>
       </div>
 
-      {/* Acción de cierre */}
-      <button
-        onClick={onClose}
-        className="w-full py-[14px] rounded-[16px] font-sans font-[700] text-[14px]"
-        style={
-          isFinished
-            ? { background: C.coralGrad, color: C.white, boxShadow: C.coralGlow }
-            : { backgroundColor: C.glass, border: `1px solid ${C.glassBorder}`, color: C.w80 }
-        }
-      >
-        {isFinished ? 'Volver a mis técnicas' : 'Terminar'}
-      </button>
+      {/* Acciones de cierre */}
+      <div className="w-full flex flex-col">
+        <button
+          onClick={onClose}
+          className="w-full py-[14px] rounded-[16px] font-sans font-[700] text-[14px]"
+          style={
+            isFinished
+              ? { background: C.coralGrad, color: C.white, boxShadow: C.coralGlow }
+              : { backgroundColor: C.glass, border: `1px solid ${C.glassBorder}`, color: C.w80 }
+          }
+        >
+          {isFinished ? 'Volver a mis técnicas' : 'Terminar'}
+        </button>
+
+        {/* Secundario, solo al terminar. Mismo estilo discreto que "Hacer un
+            nuevo chequeo" en `Recommendations.tsx`. Al aparecer empuja el botón
+            principal hacia arriba; se prefirió ese salto de medio segundo antes
+            que reservarle el hueco durante los 57 s del ejercicio. */}
+        {isFinished && (
+          <motion.button
+            onClick={repeatTechnique}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: reduceMotion ? 0.2 : 0.4, delay: reduceMotion ? 0 : 0.25 }}
+            className="w-full py-[14px] font-sans font-[600] text-[13px] text-center"
+            style={{ color: C.w70 }}
+          >
+            Repetir técnica
+          </motion.button>
+        )}
+      </div>
     </motion.div>
   );
 }

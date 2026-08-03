@@ -40,6 +40,7 @@ Todas las pantallas comparten este sistema de tokens.
 ### Texto (opacidades sobre fondo oscuro)
 * **w100 (white):** `#FFFFFF` - Títulos principales.
 * **w80:** `rgba(255,255,255,0.80)` - Cuerpo de texto, labels activos.
+* **w70:** `rgba(255,255,255,0.70)` - Acciones secundarias de texto (sin fondo), donde w60 quedaba corto de contraste.
 * **w60:** `rgba(255,255,255,0.60)` - Subtítulos, labels inactivos.
 * **w40:** `rgba(255,255,255,0.40)` - Metadata, fechas, texto de apoyo.
 * **w20:** `rgba(255,255,255,0.20)` - Placeholders, hints.
