@@ -42,16 +42,16 @@ export const techniques: Technique[] = [
     // Activación física + angustia aguda: la respiración regula el cuerpo.
     matchesSymptomIds: ["s1", "s2", "s3", "s5", "s6", "s7", "s8", "s10"],
     steps: [
-      { text: "Inhala por la nariz contando mentalmente hasta 4." },
-      { text: "Mantén la respiración contando hasta 7." },
-      { text: "Exhala lentamente por la boca contando hasta 8." },
-      { text: "Repite el ciclo 3 veces en total." }
+      { text: "Inhala por la nariz contando mentalmente hasta 4" },
+      { text: "Mantén la respiración contando hasta 7" },
+      { text: "Exhala lentamente por la boca contando hasta 8" },
+      { text: "Repite el ciclo 3 veces en total" }
     ],
     // Ritmo 4-7-8. Los segundos alimentan tanto la animación como el contador.
     breathingPhases: [
-      { kind: "inhale", label: "Inhala", instruction: "Inhala por la nariz contando mentalmente hasta 4.", seconds: 4 },
-      { kind: "hold", label: "Retén", instruction: "Mantén la respiración contando hasta 7.", seconds: 7 },
-      { kind: "exhale", label: "Exhala", instruction: "Exhala lentamente por la boca contando hasta 8.", seconds: 8 }
+      { kind: "inhale", label: "Inhala", instruction: "Inhala por la nariz contando mentalmente hasta 4", seconds: 4 },
+      { kind: "hold", label: "Retén", instruction: "Mantén la respiración contando hasta 7", seconds: 7 },
+      { kind: "exhale", label: "Exhala", instruction: "Exhala lentamente por la boca contando hasta 8", seconds: 8 }
     ]
   },
   {
@@ -63,11 +63,11 @@ export const techniques: Technique[] = [
     // Desorientación y pensamientos acelerados: anclar en los sentidos.
     matchesSymptomIds: ["s4", "s11", "s12", "s15", "s16", "s17", "s18"],
     steps: [
-      { text: "Encuentra 5 cosas que puedas ver a tu alrededor." },
-      { text: "Busca 4 cosas que puedas tocar y siente su textura." },
-      { text: "Escucha 3 cosas diferentes en tu entorno." },
-      { text: "Identifica 2 olores a tu alrededor." },
-      { text: "Encuentra 1 cosa que puedas saborear." }
+      { text: "Encuentra 5 cosas que puedas ver a tu alrededor" },
+      { text: "Busca 4 cosas que puedas tocar y siente su textura" },
+      { text: "Escucha 3 cosas diferentes en tu entorno" },
+      { text: "Identifica 2 olores a tu alrededor" },
+      { text: "Encuentra 1 cosa que puedas saborear" }
     ]
   },
   {
@@ -79,10 +79,10 @@ export const techniques: Technique[] = [
     // Emociones intensas de miedo/desesperanza: dar firmeza y contención.
     matchesSymptomIds: ["s9", "s10", "s13", "s14", "s16"],
     steps: [
-      { text: "Planta tus pies firmemente en el suelo." },
-      { text: "Concéntrate en la sensación de la superficie bajo tus pies." },
-      { text: "Imagina unas raíces fuertes conectándote con el centro de la tierra." },
-      { text: "Siente cómo esa firmeza te sostiene." }
+      { text: "Planta tus pies firmemente en el suelo" },
+      { text: "Concéntrate en la sensación de la superficie bajo tus pies" },
+      { text: "Imagina unas raíces fuertes conectándote con el centro de la tierra" },
+      { text: "Siente cómo esa firmeza te sostiene" }
     ]
   }
 ];
