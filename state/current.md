@@ -1,6 +1,6 @@
 # Estado actual — Mi Refugio
 
-_Actualizado: 2026-07-29 · Sesión 05_
+_Actualizado: 2026-08-02 · Sesión 06_
 
 ## ✅ Hecho
 - App funcional: flujo HOME → SYMPTOMS → PROCESSING → RECOMMENDATIONS con transiciones `motion`. Ahora suma **PROFILE** como quinta pantalla (ver abajo).
@@ -24,14 +24,20 @@ _Actualizado: 2026-07-29 · Sesión 05_
 - **Respiración guiada a pantalla completa** (`src/screens/BreathingExercise.tsx`): la card de Respiración 4-7-8 ofrece "Respiremos juntos" → overlay con círculo que escala al ritmo 4-7-8, anillo de arcos proporcionales con marcador, instrucción y cuenta regresiva. Respeta `prefers-reduced-motion`. Verificado en navegador (fases, cierre, y el caso en que la respiración cae a "Otras técnicas"). Ver `decisions/0008`.
 - **Respiración guiada a 3 ciclos (57 s), con corte de ciclo visible** (2026-07-29): `BREATHING_CYCLES = 3` en `BreathingExercise.tsx`; las animaciones duran un ciclo y se repiten (`repeat`), y el temporizador ubica la fase por módulo. En cada corte: el marcador vuelve arriba, pulsa un anillo lavanda (0,8 s) y avanza el indicador de **3 puntos + "Respiración N de 3"** (esa línea lleva el `aria-live`). Con reduced motion quedan los puntos y el texto. Medido en el navegador: corte exacto a 19,00 s, pulso 0.86 → 0 en ~0,75 s, escala sin salto en el empalme, fin a ~57 s. Cierra el pendiente de la etiqueta "60 seg". Ver `decisions/0011`.
 
-- **DEMO · técnica principal fija**: `DEMO_PINNED_TECHNIQUE_ID = "t1"` en `data.ts` hace que Respiración 4-7-8 sea siempre la principal y Grounding/Ancla siempre adicionales. Verificado con síntomas coincidentes y no coincidentes. Ver `decisions/0009`.
+- ~~**DEMO · técnica principal fija**~~ → **revertida el 2026-08-02** (ver sesión 06). `DEMO_PINNED_TECHNIQUE_ID` está en `null`; la constante sigue en `data.ts` como interruptor documentado para una demo futura. Ver `decisions/0009`.
 
-- **Presentación del Demo Day** (`src/demo-day/DemoDay.tsx` + `slides.ts`, ruta `/demo-day`): 6 diapositivas que acompañan la demo en vivo. Ruteo por pathname en `src/main.tsx` (la app no usa router); `App.tsx` y `src/screens/*` sin tocar. Navegación con ←/→ (y RePág/AvPág, Inicio/Fin), botón a `https://mi-refugio-app.vercel.app/` en pestaña nueva, foco visible de 3px, `aria-live` al cambiar de diapositiva, respeta `prefers-reduced-motion`. Sin dependencias nuevas; reutiliza `theme.ts` y las fuentes existentes. Verificado en navegador a 1920px, 1025px, 768px y 390px: consola limpia, contraste mínimo medido 4.78:1 y ningún texto visible bajo 18px (mobile) ni bajo 24px (≥1024px). `npm run lint` OK. Ver `decisions/0010`.
-- **Demo Day en producción**: `vercel.json` con rewrite SPA (`/(.*)` → `/index.html`) para que `/demo-day` no dé 404 en Vercel. Vercel resuelve el filesystem antes que los rewrites, así que `dist/assets/*` se sigue sirviendo directo. `npm run build` OK (384 kB JS / 21 kB CSS).
+- ~~**Presentación del Demo Day** (`/demo-day`)~~ → **retirada el 2026-08-02** (ver abajo). Se usó en el Demo Day y cumplió su función. Ver `decisions/0010`.
+- **`vercel.json`**: rewrite SPA (`/(.*)` → `/index.html`). Se creó para `/demo-day`, pero **se mantiene** tras el retiro: es la config estándar de un SPA estático y evita 404 en cualquier ruta futura. Vercel resuelve el filesystem antes que los rewrites, así que `dist/assets/*` se sigue sirviendo directo.
+
+### Sesión 06 (2026-08-02)
+- **Presentación del Demo Day eliminada del producto**: se borró `src/demo-day/` (`DemoDay.tsx` + `slides.ts`) y la condición por pathname de `src/main.tsx`, que volvió a montar `<App />` y nada más. Era la salida ya prevista en `decisions/0010`; el código queda recuperable en git (commit `534cb77`). Sin residuos: la única referencia en código era `main.tsx`. Verificado: `npm run lint` OK, `npm run build` OK (**373 kB JS / 18,7 kB CSS**, antes 384/21), y en el navegador tanto `/` como `/demo-day` renderizan la app normal con consola limpia.
+- **Recomendación real por síntomas restaurada**: `DEMO_PINNED_TECHNIQUE_ID = null` en `src/data.ts`. `decisions/0005` vuelve a regir; `0009` queda revertida. Verificado en el navegador con dos casos (workaround G7, `useState` inicial temporal en `App.tsx`, ya revertido):
+  - `["s9"]` (Miedo intenso) → principal **Ancla de seguridad**, Respiración 4-7-8 baja a "Otras técnicas". Es el caso que `0009` rompía.
+  - `["s1","s2","s4"]` (Taquicardia, Falta de aire, Mareos) → **Respiración 4-7-8** (2 coincidencias) antes que **Grounding** (1); Ancla en "Otras técnicas". Chips correctos en cada card.
+  - `npm run lint` y `npm run build` OK.
+- **Cerrado el pendiente de copy**: con el pin en `null`, "Basada en lo que sientes ahora" vuelve a ser exacto. Y ninguna card principal puede quedar sin chips: el CTA "Continuar" de `Symptoms.tsx` solo aparece con ≥1 síntoma (`selectedIds.size > 0`) y entre las 3 técnicas cubren los 18 síntomas, así que toda selección posible produce al menos una coincidencia. El fallback `techniques.slice(0, 1)` de `Recommendations.tsx` queda como defensivo, inalcanzable en la práctica.
 
 ## ⏳ Pendiente
-- **Salir del modo demo:** poner `DEMO_PINNED_TECHNIQUE_ID` en `null` para restaurar la recomendación real por síntomas (`decisions/0005`, hoy suspendida por `0009`).
-- **Copy a revisar:** con la técnica fija, el subtítulo "Basada en lo que sientes ahora" es parcialmente inexacto. Y si los síntomas no coinciden con la respiración, su card queda sin chips.
 - Chat psicólogo: definir fallback fuera de horario (línea *4141) y confirmar destino Quédate (RM Chile) según público objetivo. Ver `decisions/0004`.
 - Persistencia: el estado se pierde al recargar (sin storage). Definir si v1 lo necesita.
 - Verificar flujo completo end-to-end < 30 s (criterio de la Ficha 4D).

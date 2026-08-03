@@ -1,5 +1,11 @@
 # 0010 — Presentación del Demo Day en la ruta `/demo-day`
-_Fecha: 2026-07-29 · Estado: aceptada · No afecta a `0003` (flujo lineal)_
+_Fecha: 2026-07-29 · Estado: **retirada el 2026-08-02** · No afecta a `0003` (flujo lineal)_
+
+> **Retiro (2026-08-02).** Terminado el Demo Day, se ejecutó la salida prevista más abajo:
+> se borró `src/demo-day/` y la condición de `src/main.tsx`, que volvió a montar `<App />` sin más.
+> `/demo-day` ahora sirve la app normal (el rewrite SPA de `vercel.json` se mantuvo, ver
+> "Consecuencias"). El código de la presentación queda recuperable en el historial de git:
+> commit `534cb77` (creación) y `1455fb0`/`e1ef375` como último estado antes del borrado.
 
 ## Contexto
 Para el Demo Day hacen falta 6 diapositivas (portada, problema, demo, decisiones, verificación, cierre) que **acompañen** los 5 minutos de demo en vivo sobre `https://mi-refugio-app.vercel.app/`, sin reemplazarla. Requisitos: navegación por teclado, legible a ~3 m, responsive, WCAG AA, sin dependencias nuevas y sin tocar el producto.

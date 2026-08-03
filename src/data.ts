@@ -2,9 +2,9 @@ import { Symptom, Technique, RecommendationSession } from "./types";
 import { C } from "./theme";
 
 // DEMO: fija una técnica como principal para cualquier combinación de síntomas.
-// Se usa para mostrar siempre la respiración guiada. Poner en `null` restaura la
-// recomendación real por síntomas (`decisions/0005`). Ver `decisions/0009`.
-export const DEMO_PINNED_TECHNIQUE_ID: string | null = "t1";
+// En `null` (estado normal) manda la recomendación real por síntomas
+// (`decisions/0005`). Ponerla en un id de técnica solo para demos. Ver `decisions/0009`.
+export const DEMO_PINNED_TECHNIQUE_ID: string | null = null;
 
 export const symptoms: Symptom[] = [
   // Físicos

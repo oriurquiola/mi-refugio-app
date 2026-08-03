@@ -1,5 +1,14 @@
 # 0009 — DEMO: Respiración 4-7-8 fija como técnica principal
-_Fecha: 2026-07-29 · Estado: aceptada (temporal, solo demo) · Limita a `0005`_
+_Fecha: 2026-07-29 · Estado: **revertida el 2026-08-02** · Ya no limita a `0005`_
+
+> **Reversión (2026-08-02).** Terminado el Demo Day, `DEMO_PINNED_TECHNIQUE_ID` volvió a `null`
+> y `0005` está **plenamente vigente**. Verificado en el navegador con dos casos:
+> con "Miedo intenso" la principal es **Ancla de seguridad** (justo el caso que esta ADR
+> describía como roto por el pin) y la respiración baja a "Otras técnicas"; con
+> Taquicardia + Falta de aire + Mareos el orden por relevancia da Respiración 4-7-8 (2 síntomas)
+> antes que Grounding (1), y Ancla queda abajo.
+> La constante y su rama en `Recommendations.tsx` **se conservan** como interruptor documentado
+> para una demo futura: basta volver a ponerle un id de técnica.
 
 ## Contexto
 `0005` estableció la recomendación real: las técnicas se puntúan por cuántos síntomas seleccionados abordan y las coincidentes suben a "Técnicas para ti". Con eso, la respiración guiada (`0008`) solo aparecía como principal si la persona marcaba síntomas físicos; con "Miedo intenso", por ejemplo, quedaba abajo en "Otras técnicas".
