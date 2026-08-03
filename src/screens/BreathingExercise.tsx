@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { motion, useReducedMotion } from 'motion/react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { X } from 'lucide-react';
 import { C } from '../theme';
 import { Technique, BreathingPhase } from '../types';
@@ -29,6 +29,12 @@ const BREATHING_CYCLES = 3;
 
 // Duración del pulso que marca el cierre de un ciclo.
 const CYCLE_PULSE_SECONDS = 0.8;
+
+// Alto fijo del bloque "fase + instrucción". Durante la transición conviven el
+// texto saliente y el entrante, ambos absolutos, así que el contenedor no puede
+// depender de su contenido o el layout saltaría en cada cambio de fase. Cubre la
+// instrucción más larga, que ocupa dos líneas (medido: 93 px en mobile).
+const PHASE_TEXT_HEIGHT = 100;
 
 export function BreathingExercise({ technique, phases, onClose }: BreathingExerciseProps) {
   const reduceMotion = useReducedMotion();
@@ -114,6 +120,23 @@ export function BreathingExercise({ technique, phases, onClose }: BreathingExerc
 
   const currentPhase = phases[phaseIndex];
   const color = technique.color;
+
+  // Entrada/salida de los textos de fase: el mismo efecto que los mensajes de
+  // `Processing.tsx` (desplazamiento + desenfoque). Con reduced motion el
+  // relevo es un fundido seco, sin movimiento ni blur.
+  const phaseTextMotion = reduceMotion
+    ? {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        exit: { opacity: 0 },
+        transition: { duration: 0.2 },
+      }
+    : {
+        initial: { opacity: 0, y: 18, filter: 'blur(5px)' },
+        animate: { opacity: 1, y: 0, filter: 'blur(0px)' },
+        exit: { opacity: 0, y: -14, filter: 'blur(5px)' },
+        transition: { duration: 0.55, ease: 'easeOut' as const },
+      };
 
   return (
     <motion.div
@@ -239,16 +262,35 @@ export function BreathingExercise({ technique, phases, onClose }: BreathingExerc
           </div>
 
           {/* Fase + instrucción + en qué respiración vamos */}
-          <div className="flex flex-col items-center gap-[10px] text-center min-h-[150px]">
-            <span className="font-sans font-[800] text-[24px] text-white">
-              {currentPhase.label}
-            </span>
-            <p
-              className="font-sans font-[500] text-[15px] max-w-[300px]"
-              style={{ color: C.w80, lineHeight: 1.55 }}
-            >
-              {currentPhase.instruction}
-            </p>
+          {/* `w-full` es necesario: la fase y la instrucción salieron del flujo
+              (son hijos absolutos), así que ya no aportan ancho al contenedor y
+              sin esto la columna colapsaría al ancho de los puntos. */}
+          <div className="w-full flex flex-col items-center gap-[10px] text-center min-h-[150px]">
+            {/* La fase y su instrucción se relevan juntas en cada cambio de
+                fase. `AnimatePresence` va sin `mode="wait"` a propósito: el
+                texto entrante monta sin esperar a que termine la salida, así
+                la instrucción nunca queda vacía si el navegador estrangula
+                requestAnimationFrame (gotcha G7). El precio es que ambos
+                conviven un instante, de ahí el alto fijo y los hijos absolutos. */}
+            <div className="relative w-full" style={{ height: PHASE_TEXT_HEIGHT }}>
+              <AnimatePresence initial={false}>
+                <motion.div
+                  key={phaseIndex}
+                  className="absolute inset-0 flex flex-col items-center gap-[10px]"
+                  {...phaseTextMotion}
+                >
+                  <span className="font-sans font-[800] text-[24px] text-white">
+                    {currentPhase.label}
+                  </span>
+                  <p
+                    className="font-sans font-[500] text-[15px] max-w-[300px] mx-auto"
+                    style={{ color: C.w80, lineHeight: 1.55 }}
+                  >
+                    {currentPhase.instruction}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
+            </div>
 
             {/* Un punto por ciclo: el actual encendido, los ya hechos atenuados.
                 El texto de abajo es la versión accesible de lo mismo. */}
